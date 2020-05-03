@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import Tooltip from './Tooltip';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Colors } from '../constants';
 
 const iconText = new Map()
   .set('save', 'Save to Gallery')
@@ -33,6 +34,6 @@ export default IconButton;
 
 const styles = StyleSheet.create({
   icon: {
-    color: '#FFFFFF',
+    color: Colors.iconColor,
   },
 });
