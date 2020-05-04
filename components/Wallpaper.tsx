@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Image, StyleSheet, Dimensions, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { BooruResponsePost } from 'types';
+import { getMostPopularTags } from '../API';
+import { usePromise } from '../hooks/usePromise';
 
 const supportedFormats = new Set(['jpg', 'png']);
 
@@ -14,11 +16,15 @@ function Wallpaper({ query }: { query: string }) {
         `https://testbooru.donmai.us/posts.json?tags=${query}`,
       )
         .then((response) => response.json())
-        .catch((e) => console.log(e));
+        .catch((e) => console.warn(e));
       setPosts(data);
     })();
   }, [query]);
-
+  const promise = useCallback(() => {
+    return getMostPopularTags().then((res) => res);
+  }, []);
+  const promiseState = usePromise(promise);
+  console.log('promise state:', promiseState);
   return (
     <View>
       {posts ? (
