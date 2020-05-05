@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { statusBarHeight, Colors } from '../constants';
+import { statusBarHeight, Colors, menuBarHeight } from '../constants';
 
 function TopNav() {
   return (
@@ -20,7 +20,7 @@ export default TopNav;
 
 const styles = StyleSheet.create({
   container: {
-    height: 75 + statusBarHeight,
+    height: menuBarHeight * 1.5 + statusBarHeight,
     width: Dimensions.get('window').width,
     flexDirection: 'row',
     justifyContent: 'space-between',

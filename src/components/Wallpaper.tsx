@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Image, StyleSheet, Dimensions, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { BooruResponsePost } from 'types';
+import { BooruResponsePost } from 'src/types';
 import { getMostPopularTags } from '../API';
 import { usePromise } from '../hooks/usePromise';
 
@@ -24,7 +24,7 @@ function Wallpaper({ query }: { query: string }) {
     return getMostPopularTags().then((res) => res);
   }, []);
   const promiseState = usePromise(promise);
-  console.log('promise state:', promiseState);
+  // console.log('promise state:', promiseState);
   return (
     <View>
       {posts ? (

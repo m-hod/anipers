@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
 import IconButton from './IconButton';
-import { Colors } from '../constants';
+import { Colors, menuBarHeight } from '../constants';
 
 function BottomNav() {
   return (
@@ -19,7 +19,7 @@ export default BottomNav;
 
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: menuBarHeight,
     width: Dimensions.get('window').width,
     backgroundColor: Colors.menuColor,
     flexDirection: 'row',

@@ -11,3 +11,11 @@ export type BooruAPIResponseTag = {
   category: number;
   updated_at: Date;
 };
+
+export type TagCategories = 'general' | 'artist' | 'copyright' | 'character';
+
+export type TagCategoryIDS = 0 | 1 | 3 | 4;
+
+export type MappedTagCategories = {
+  [key in TagCategories]: TagCategoryIDS;
+};
