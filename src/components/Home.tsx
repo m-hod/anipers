@@ -1,12 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
-  TextInput,
-  Button,
   FlatList,
   Text,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import Wallpaper from './Wallpaper';
 import BottomNav from './BottomNav';
@@ -16,10 +15,11 @@ import {
   statusBarHeight,
   menuBarHeight,
   CategoryIDs,
+  Colors,
 } from '../constants';
 import { parseTagName } from '../utils';
 import { usePromise } from '../hooks/usePromise';
-import { getMostPopularTags } from '../API';
+import { getMostPopularTags, getRandomPostByTag } from '../API';
 import { TagCategories } from 'src/types';
 
 const homeTagsCategories = new Map<TagCategories, string>([
@@ -30,7 +30,7 @@ const homeTagsCategories = new Map<TagCategories, string>([
 ]);
 
 function Home() {
-  const [query, setQuery] = useState('');
+  // const [query, setQuery] = useState('');
 
   return (
     <View>
@@ -66,6 +66,23 @@ function TagsGroup({ category }: { category: TagCategories }) {
     [category],
   );
   const promiseState = usePromise(promise);
+  const [heroImageUrl, setHeroImageUrl] = useState('');
+
+  useEffect(() => {
+    if (promiseState.status === 'loaded' && promiseState.data) {
+      const tagQueryString = (() => {
+        // add exceptions for tags that don't return image urls here
+        if (promiseState.data[0].name === 'banned_artist') {
+          return promiseState.data[1].name;
+        } else {
+          return promiseState.data[0].name;
+        }
+      })();
+      getRandomPostByTag(tagQueryString).then((res) =>
+        setHeroImageUrl(res[0].file_url),
+      );
+    }
+  }, [promiseState]);
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {
@@ -81,13 +98,22 @@ function TagsGroup({ category }: { category: TagCategories }) {
         <View>
           <FlatList
             data={promiseState.data}
-            renderItem={(el) => (
-              <TouchableOpacity style={styles.tag} activeOpacity={0.5}>
-                <Text style={styles.tagText}>
-                  {parseTagName(el.item.name)} {el.item.post_count}
-                </Text>
-              </TouchableOpacity>
-            )}
+            renderItem={(el) => {
+              // currently filtering twice, would be better to filter this out in the call itself so it never reaches this point
+              if (el.item.name === 'banned_artist') {
+                return null;
+              }
+              return (
+                <TouchableOpacity style={styles.tag} activeOpacity={0.5}>
+                  <Text style={[styles.tagText, styles.tagTextTitle]}>
+                    {parseTagName(el.item.name)}
+                  </Text>
+                  <Text style={[styles.tagText, styles.tagTextPostCount]}>
+                    {el.item.post_count}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
           />
         </View>
       );
@@ -100,6 +126,9 @@ function TagsGroup({ category }: { category: TagCategories }) {
         Most Popular {homeTagsCategories.get(category)}
       </Text>
       {renderTags()}
+      {!!heroImageUrl && (
+        <Image source={{ uri: heroImageUrl }} style={styles.image} />
+      )}
     </View>
   );
 }
@@ -110,20 +139,44 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingVertical: statusBarHeight + menuBarHeight + 25,
+    position: 'relative',
+    zIndex: 1,
+    backgroundColor: 'gray',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   tag: {
     margin: 20,
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
-    backgroundColor: 'gray',
+    backgroundColor: Colors.menuColor,
+    width: 200,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   tagText: {
     color: 'white',
     fontSize: 20,
+  },
+  tagTextTitle: {
+    maxWidth: 125,
+  },
+  tagTextPostCount: {
+    maxWidth: 75,
+    textAlign: 'right',
+  },
+  image: {
+    flex: 1,
+    position: 'absolute',
+    zIndex: -999,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });
