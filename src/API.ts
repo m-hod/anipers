@@ -7,7 +7,7 @@ import { BooruAPIResponseTag, BooruResponsePost } from './types';
  * chain additional parameters with &
  */
 
-const APIRoute = 'https://danbooru.donmai.us';
+const APIRoute = 'https://safebooru.donmai.us';
 
 export const getMostPopularTags = async (
   category: number,

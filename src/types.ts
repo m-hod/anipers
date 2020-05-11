@@ -19,3 +19,10 @@ export type TagCategoryIDS = 0 | 1 | 3 | 4;
 export type MappedTagCategories = {
   [key in TagCategories]: TagCategoryIDS;
 };
+
+/* React Navigation Types */
+export type RootStackParamList = {
+  home: undefined;
+  posts: { tag: string };
+  post: { imageUrl: string };
+};

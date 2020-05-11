@@ -6,42 +6,42 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
-import Wallpaper from './Wallpaper';
-import BottomNav from './BottomNav';
 import TopNav from './TopNav';
 import {
-  pageContainer,
   statusBarHeight,
   menuBarHeight,
   CategoryIDs,
   Colors,
+  Fonts,
+  filteredTags,
+  Layout,
+  WindowHeight,
+  WindowWidth,
 } from '../constants';
-import { parseTagName } from '../utils';
+import { parseTagName, truncateNumber } from '../utils';
 import { usePromise } from '../hooks/usePromise';
 import { getMostPopularTags, getRandomPostByTag } from '../API';
-import { TagCategories } from 'src/types';
+import { TagCategories, RootStackParamList } from 'src/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
 const homeTagsCategories = new Map<TagCategories, string>([
-  ['general', 'Tags'],
   ['character', 'Characters'],
   ['copyright', 'Franchise'],
+  ['general', 'Tags'],
   ['artist', 'Artists'],
 ]);
 
-function Home() {
-  // const [query, setQuery] = useState('');
-
+export default function Home() {
   return (
     <View>
       <TopNav />
-      {/* <TextInput
-        value={query}
-        onChangeText={(e) => {
-          setQuery(e);
-        }}
-      />
-      <Button title="Search" onPress={() => {}} /> */}
       <FlatList
         data={[...homeTagsCategories.keys()]}
         renderItem={(el) => {
@@ -51,16 +51,15 @@ function Home() {
         pagingEnabled
         showsHorizontalScrollIndicator
         keyExtractor={(item) => item}
+        initialNumToRender={4}
       />
-      {/* <Wallpaper query={query} /> */}
-      <BottomNav />
     </View>
   );
 }
 
-export default Home;
-
 function TagsGroup({ category }: { category: TagCategories }) {
+  const navigation = useNavigation<NavigationProps>();
+  const [count, setCount] = useState<number>(0);
   const promise = useCallback(
     () => getMostPopularTags(CategoryIDs[category]).then((res) => res),
     [category],
@@ -71,8 +70,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
   useEffect(() => {
     if (promiseState.status === 'loaded' && promiseState.data) {
       const tagQueryString = (() => {
-        // add exceptions for tags that don't return image urls here
-        if (promiseState.data[0].name === 'banned_artist') {
+        if (filteredTags.has(promiseState.data[0].name)) {
           return promiseState.data[1].name;
         } else {
           return promiseState.data[0].name;
@@ -82,7 +80,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
         setHeroImageUrl(res[0].file_url),
       );
     }
-  }, [promiseState]);
+  }, [promiseState, count]);
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {
@@ -95,66 +93,117 @@ function TagsGroup({ category }: { category: TagCategories }) {
 
     if (promiseState.status === 'loaded' && promiseState.data) {
       return (
-        <View>
-          <FlatList
-            data={promiseState.data}
-            renderItem={(el) => {
-              // currently filtering twice, would be better to filter this out in the call itself so it never reaches this point
-              if (el.item.name === 'banned_artist') {
-                return null;
-              }
-              return (
-                <TouchableOpacity style={styles.tag} activeOpacity={0.5}>
-                  <Text style={[styles.tagText, styles.tagTextTitle]}>
+        <FlatList
+          data={promiseState.data}
+          renderItem={(el) => {
+            // currently filtering twice, would be better to filter this out in the call itself so it never reaches this point
+            if (filteredTags.has(el.item.name)) {
+              return null;
+            }
+            return (
+              <TouchableOpacity
+                style={styles.tag}
+                activeOpacity={0.5}
+                onPress={() => {
+                  navigation.navigate('posts', { tag: el.item.name });
+                }}>
+                <ScrollView style={styles.tagNameContainer} horizontal>
+                  <Text style={[styles.tagText]}>
                     {parseTagName(el.item.name)}
                   </Text>
-                  <Text style={[styles.tagText, styles.tagTextPostCount]}>
-                    {el.item.post_count}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
+                </ScrollView>
+                <Text style={[styles.tagText, styles.tagTextPostCount]}>
+                  {truncateNumber(el.item.post_count)}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+          keyExtractor={(item) => item.id.toString()}
+        />
       );
     }
   };
 
   return (
     <View style={styles.pageContainer}>
-      <Text style={styles.title}>
-        Most Popular {homeTagsCategories.get(category)}
-      </Text>
-      {renderTags()}
+      <Text style={styles.subTitle}>Most Popular:</Text>
+      <Text style={styles.title}>{homeTagsCategories.get(category)}</Text>
+      <View style={styles.tagContainer}>{renderTags()}</View>
       {!!heroImageUrl && (
-        <Image source={{ uri: heroImageUrl }} style={styles.image} />
+        <Image
+          source={{ uri: heroImageUrl }}
+          style={styles.image}
+          onLoad={() => {
+            console.log('hi');
+          }}
+        />
       )}
+      <HomeBottomNav
+        imageUrl={heroImageUrl}
+        count={count}
+        setCount={setCount}
+      />
+      <View style={styles.overlay} />
+    </View>
+  );
+}
+
+function HomeBottomNav({
+  imageUrl,
+  setCount,
+}: {
+  imageUrl: string;
+  count: number;
+  setCount: Function;
+}) {
+  const navigation = useNavigation<NavigationProps>();
+  return (
+    <View style={styles.bottomNav}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('post', { imageUrl });
+        }}>
+        <Icon name="image" size={36} style={styles.bottomNavIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          setCount((prevCount: number) => prevCount + 1);
+        }}>
+        <Icon name="refresh" size={36} style={styles.bottomNavIcon} />
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   pageContainer: {
-    ...pageContainer,
+    ...Layout.pageContainer,
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingVertical: statusBarHeight + menuBarHeight + 25,
     position: 'relative',
     zIndex: 1,
-    backgroundColor: 'gray',
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    ...Fonts.titleFont,
+  },
+  subTitle: {
+    ...Fonts.subTitleFont,
+  },
+  tagContainer: {
+    marginVertical: 20,
+    height: Dimensions.get('window').height / 2,
+    overflow: 'scroll',
   },
   tag: {
-    margin: 20,
+    marginVertical: 10,
+    marginHorizontal: 20,
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
-    backgroundColor: Colors.menuColor,
-    width: 200,
+    backgroundColor: Colors.menuColorDark,
+    width: 275,
+    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -163,20 +212,32 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
-  tagTextTitle: {
-    maxWidth: 125,
+  tagNameContainer: {
+    flex: 9,
+    width: 275 * 0.5,
   },
   tagTextPostCount: {
     maxWidth: 75,
     textAlign: 'right',
   },
   image: {
-    flex: 1,
-    position: 'absolute',
+    ...Layout.containerOverlay,
     zIndex: -999,
-    top: 0,
-    left: 0,
+  },
+  overlay: {
+    ...Layout.containerOverlay,
+    zIndex: -998,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+  },
+  bottomNav: {
+    position: 'absolute',
+    top: WindowHeight - 30 - 72,
     right: 0,
     bottom: 0,
+    left: WindowWidth - 20 - 36,
+  },
+  bottomNavIcon: {
+    color: Colors.iconColorActive,
+    marginVertical: 5,
   },
 });
