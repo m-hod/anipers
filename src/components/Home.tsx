@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Animated,
 } from 'react-native';
 import TopNav from './TopNav';
 import {
@@ -28,6 +29,7 @@ import { TagCategories, RootStackParamList } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import useSpinAnimation from '../hooks/useSpinAnimation';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -66,6 +68,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
   );
   const promiseState = usePromise(promise);
   const [heroImageUrl, setHeroImageUrl] = useState('');
+  const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
     if (promiseState.status === 'loaded' && promiseState.data) {
@@ -81,6 +84,13 @@ function TagsGroup({ category }: { category: TagCategories }) {
       );
     }
   }, [promiseState, count]);
+
+  // heroImageUrl state is array of two urls
+  // image loads first item in list
+  // if there is an item in the array, and the call is made to the api again, push the url onto the item on the end of the array
+  // render an image for the last item on the array
+  // but only display the image on the last item on the array when the image is done loading
+  // then prune previous items on the arrays
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {
@@ -133,15 +143,21 @@ function TagsGroup({ category }: { category: TagCategories }) {
         <Image
           source={{ uri: heroImageUrl }}
           style={styles.image}
+          onLoadStart={() => {
+            if (!imageLoading) {
+              setImageLoading(true);
+            }
+          }}
           onLoad={() => {
-            console.log('hi');
+            setImageLoading(false);
           }}
         />
       )}
       <HomeBottomNav
         imageUrl={heroImageUrl}
-        count={count}
         setCount={setCount}
+        imageLoading={imageLoading}
+        setImageLoading={setImageLoading}
       />
       <View style={styles.overlay} />
     </View>
@@ -151,12 +167,17 @@ function TagsGroup({ category }: { category: TagCategories }) {
 function HomeBottomNav({
   imageUrl,
   setCount,
+  imageLoading,
+  setImageLoading,
 }: {
   imageUrl: string;
-  count: number;
   setCount: Function;
+  imageLoading: boolean;
+  setImageLoading: (arg: boolean) => void;
 }) {
   const navigation = useNavigation<NavigationProps>();
+  const spin = useSpinAnimation();
+
   return (
     <View style={styles.bottomNav}>
       <TouchableOpacity
@@ -168,8 +189,17 @@ function HomeBottomNav({
       <TouchableOpacity
         onPress={() => {
           setCount((prevCount: number) => prevCount + 1);
+          setImageLoading(true);
         }}>
-        <Icon name="refresh" size={36} style={styles.bottomNavIcon} />
+        <Animated.View
+          style={[
+            styles.animatedIconContainer,
+            imageLoading && {
+              transform: [{ rotate: spin }],
+            },
+          ]}>
+          <Icon name="refresh" size={36} style={styles.bottomNavIcon} />
+        </Animated.View>
       </TouchableOpacity>
     </View>
   );
@@ -239,5 +269,8 @@ const styles = StyleSheet.create({
   bottomNavIcon: {
     color: Colors.iconColorActive,
     marginVertical: 5,
+  },
+  animatedIconContainer: {
+    width: 36,
   },
 });
