@@ -67,7 +67,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
     [category],
   );
   const promiseState = usePromise(promise);
-  const [heroImageUrl, setHeroImageUrl] = useState('');
+  const [heroImageUrl, setHeroImageUrl] = useState(['']);
   const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
@@ -80,17 +80,18 @@ function TagsGroup({ category }: { category: TagCategories }) {
         }
       })();
       getRandomPostByTag(tagQueryString).then((res) =>
-        setHeroImageUrl(res[0].file_url),
+        setHeroImageUrl((prevState) => {
+          if (prevState[0]) {
+            const newState = [...prevState];
+            newState.push(res[0].file_url);
+            return newState;
+          } else {
+            return [res[0].file_url];
+          }
+        }),
       );
     }
   }, [promiseState, count]);
-
-  // heroImageUrl state is array of two urls
-  // image loads first item in list
-  // if there is an item in the array, and the call is made to the api again, push the url onto the item on the end of the array
-  // render an image for the last item on the array
-  // but only display the image on the last item on the array when the image is done loading
-  // then prune previous items on the arrays
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {
@@ -139,22 +140,27 @@ function TagsGroup({ category }: { category: TagCategories }) {
       <Text style={styles.subTitle}>Most Popular:</Text>
       <Text style={styles.title}>{homeTagsCategories.get(category)}</Text>
       <View style={styles.tagContainer}>{renderTags()}</View>
-      {!!heroImageUrl && (
-        <Image
-          source={{ uri: heroImageUrl }}
-          style={styles.image}
-          onLoadStart={() => {
-            if (!imageLoading) {
-              setImageLoading(true);
-            }
-          }}
-          onLoad={() => {
-            setImageLoading(false);
-          }}
-        />
-      )}
+      {!!heroImageUrl[0] &&
+        heroImageUrl.map((imageUrl) => (
+          <Image
+            key={imageUrl}
+            source={{ uri: imageUrl }}
+            style={[styles.image]}
+            onLoadStart={() => {
+              if (!imageLoading) {
+                setImageLoading(true);
+              }
+            }}
+            onLoad={() => {
+              setImageLoading(false);
+              if (heroImageUrl.length) {
+                setHeroImageUrl([heroImageUrl[heroImageUrl.length - 1]]);
+              }
+            }}
+          />
+        ))}
       <HomeBottomNav
-        imageUrl={heroImageUrl}
+        imageUrl={heroImageUrl[0]}
         setCount={setCount}
         imageLoading={imageLoading}
         setImageLoading={setImageLoading}
@@ -253,6 +259,9 @@ const styles = StyleSheet.create({
   image: {
     ...Layout.containerOverlay,
     zIndex: -999,
+  },
+  imageHidden: {
+    display: 'none',
   },
   overlay: {
     ...Layout.containerOverlay,
