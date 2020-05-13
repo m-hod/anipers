@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import {
   View,
   FlatList,
@@ -8,7 +8,6 @@ import {
   Image,
   ScrollView,
   Dimensions,
-  Animated,
 } from 'react-native';
 import TopNav from './TopNav';
 import {
@@ -29,7 +28,8 @@ import { TagCategories, RootStackParamList } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import useSpinAnimation from '../hooks/useSpinAnimation';
+import Loading from '../ui/animations/Loading';
+import AppContext from '../AppContext';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -44,17 +44,11 @@ export default function Home() {
   return (
     <View>
       <TopNav />
-      <FlatList
-        data={[...homeTagsCategories.keys()]}
-        renderItem={(el) => {
-          return <TagsGroup category={el.item} />;
-        }}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator
-        keyExtractor={(item) => item}
-        initialNumToRender={4}
-      />
+      <ScrollView horizontal pagingEnabled>
+        {[...homeTagsCategories.keys()].map((category, i) => (
+          <TagsGroup key={i} category={category} />
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -69,6 +63,24 @@ function TagsGroup({ category }: { category: TagCategories }) {
   const promiseState = usePromise(promise);
   const [heroImageUrl, setHeroImageUrl] = useState(['']);
   const [imageLoading, setImageLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(0);
+
+  const { setPromises } = useContext(AppContext);
+  const initialLoadPromise = new Promise((resolve) => {
+    if (initialLoad === 1) {
+      resolve();
+    }
+    // what happens if rejected? call api again?
+  }).then(() => console.log('promise resolved!'));
+
+  useEffect(() => {
+    //@ts-ignore
+    setPromises((prevState) => {
+      const newState = [...prevState];
+      newState.push(initialLoadPromise);
+      return newState;
+    });
+  }, []);
 
   useEffect(() => {
     if (promiseState.status === 'loaded' && promiseState.data) {
@@ -79,6 +91,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
           return promiseState.data[0].name;
         }
       })();
+
       getRandomPostByTag(tagQueryString).then((res) =>
         setHeroImageUrl((prevState) => {
           if (prevState[0]) {
@@ -156,6 +169,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
               if (heroImageUrl.length) {
                 setHeroImageUrl([heroImageUrl[heroImageUrl.length - 1]]);
               }
+              setInitialLoad(initialLoad + 1);
             }}
           />
         ))}
@@ -182,7 +196,6 @@ function HomeBottomNav({
   setImageLoading: (arg: boolean) => void;
 }) {
   const navigation = useNavigation<NavigationProps>();
-  const spin = useSpinAnimation();
 
   return (
     <View style={styles.bottomNav}>
@@ -197,15 +210,7 @@ function HomeBottomNav({
           setCount((prevCount: number) => prevCount + 1);
           setImageLoading(true);
         }}>
-        <Animated.View
-          style={[
-            styles.animatedIconContainer,
-            imageLoading && {
-              transform: [{ rotate: spin }],
-            },
-          ]}>
-          <Icon name="refresh" size={36} style={styles.bottomNavIcon} />
-        </Animated.View>
+        <Loading loadingState={imageLoading} size={36} />
       </TouchableOpacity>
     </View>
   );
@@ -278,8 +283,5 @@ const styles = StyleSheet.create({
   bottomNavIcon: {
     color: Colors.iconColorActive,
     marginVertical: 5,
-  },
-  animatedIconContainer: {
-    width: 36,
   },
 });
