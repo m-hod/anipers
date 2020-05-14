@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import { Layout } from '../../constants';
 import Loading from '../animations/Loading';
+import AppContext from '../../AppContext';
 
-const AppLoadingModal = ({ visibility }: { visibility: boolean }) => {
+const AppLoadingModal = () => {
+  const visibility = useContext(AppContext).appLoading;
+
   return (
     <Modal visible={visibility}>
       <View style={styles.pageContainer}>

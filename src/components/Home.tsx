@@ -63,24 +63,21 @@ function TagsGroup({ category }: { category: TagCategories }) {
   const promiseState = usePromise(promise);
   const [heroImageUrl, setHeroImageUrl] = useState(['']);
   const [imageLoading, setImageLoading] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(0);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const { setPromises } = useContext(AppContext);
-  const initialLoadPromise = new Promise((resolve) => {
-    if (initialLoad === 1) {
-      resolve();
-    }
-    // what happens if rejected? call api again?
-  }).then(() => console.log('promise resolved!'));
 
   useEffect(() => {
-    //@ts-ignore
-    setPromises((prevState) => {
-      const newState = [...prevState];
-      newState.push(initialLoadPromise);
-      return newState;
-    });
-  }, []);
+    if (count < 1) {
+      if (heroImageUrl[0]) {
+        setPromises((prevState: Map<string, boolean>) => {
+          const newState = new Map<string, boolean>(prevState);
+          newState.set(heroImageUrl[0], initialLoad);
+          return newState;
+        });
+      }
+    }
+  }, [heroImageUrl, initialLoad, setPromises, count]);
 
   useEffect(() => {
     if (promiseState.status === 'loaded' && promiseState.data) {
@@ -169,7 +166,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
               if (heroImageUrl.length) {
                 setHeroImageUrl([heroImageUrl[heroImageUrl.length - 1]]);
               }
-              setInitialLoad(initialLoad + 1);
+              setInitialLoad(false);
             }}
           />
         ))}

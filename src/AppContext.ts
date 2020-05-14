@@ -1,21 +1,15 @@
 import React from 'react';
 
 const AppContext = React.createContext<{
-  promises: Promise<any>[];
-  setPromises(arg: Promise<any>[]): void;
+  promises: Map<string, boolean>;
+  setPromises: Function;
   appLoading: boolean;
   setAppLoading(arg: boolean): void;
 }>({
-  appLoading: false,
+  appLoading: true,
   setAppLoading: () => {},
-  promises: [],
+  promises: new Map(),
   setPromises: () => {},
 });
 
 export default AppContext;
-
-// on initial load, each tag category executes a promise in app context
-// sends these promises to context
-// when promise.allsettled, update appLoadingState
-
-//need to be able to push an array of promises to context

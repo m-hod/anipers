@@ -2,26 +2,19 @@ import React, { useEffect, useState } from 'react';
 import AppContext from './AppContext';
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [appLoading, setAppLoading] = useState(false);
-  const [promises, setPromises] = useState<Promise<any>[]>([]);
+  const [appLoading, setAppLoading] = useState(true);
+  const [promises, setPromises] = useState<Map<string, boolean>>(new Map());
 
   useEffect(() => {
-    // if (appLoading) {
-    if (promises.length) {
-      const timer = setTimeout(() => {
-        console.log('trigger promises');
-        console.log(promises);
-        // Promise.allSettled(promises).then(() => {
-        //   setAppLoading(false);
-        setPromises([]);
-        // });
-      }, 500);
-      return () => {
-        clearTimeout(timer);
-      };
+    if (appLoading) {
+      if (promises.size) {
+        if (!Array.from(promises.values()).some((item) => item)) {
+          setAppLoading(false);
+          setPromises(new Map());
+        }
+      }
     }
-    // }
-  }, [promises]);
+  }, [appLoading, promises]);
 
   return (
     <AppContext.Provider

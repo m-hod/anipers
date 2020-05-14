@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { StatusBar } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
@@ -9,10 +8,9 @@ import Home from './components/Home';
 import Posts from './components/Posts';
 import Post from './components/Post';
 
-import { Colors } from './constants';
+import StatusBar from './StatusBar';
 import AppLoadingModal from './ui/modals/AppLoadingModal';
 import AppContextProvider from './AppContextProvider';
-import AppContext from './AppContext';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -20,11 +18,7 @@ const App = () => {
   return (
     <>
       <AppContextProvider>
-        <StatusBar
-          translucent
-          backgroundColor={Colors.menuColor}
-          hidden={useContext(AppContext).appLoading}
-        />
+        <StatusBar />
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="home"
@@ -34,7 +28,7 @@ const App = () => {
             <Stack.Screen name="post" component={Post} />
           </Stack.Navigator>
         </NavigationContainer>
-        <AppLoadingModal visibility={useContext(AppContext).appLoading} />
+        <AppLoadingModal />
       </AppContextProvider>
     </>
   );
