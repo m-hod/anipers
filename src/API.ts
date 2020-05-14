@@ -1,4 +1,5 @@
 import { BooruAPIResponseTag, BooruResponsePost } from './types';
+import { filteredTags } from './constants';
 
 /**
  * Booru API Search Rules
@@ -28,6 +29,14 @@ export const getRandomPostByTag = async (
   return await fetch(
     `${APIRoute}/posts.json?limit=1&tags=${tagName}&random=true`,
   )
+    .then((response) => response.json())
+    .catch((e) => console.warn(e));
+};
+
+export const getTagPosts = async (
+  tagName: string,
+): Promise<BooruResponsePost[]> => {
+  return await fetch(`${APIRoute}/posts.json?limit=51&tags=${tagName}`)
     .then((response) => response.json())
     .catch((e) => console.warn(e));
 };

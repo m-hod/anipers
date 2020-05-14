@@ -10,6 +10,8 @@ export type BooruAPIResponseTag = {
   post_count: number;
   category: number;
   updated_at: Date;
+  // string consisting of tags separated by spaces
+  tag_list: string;
 };
 
 export type TagCategories = 'general' | 'artist' | 'copyright' | 'character';
@@ -23,6 +25,6 @@ export type MappedTagCategories = {
 /* React Navigation Types */
 export type RootStackParamList = {
   home: undefined;
-  posts: { tag: string };
+  tags: { tag: string };
   post: { imageUrl: string };
 };

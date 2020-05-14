@@ -14,6 +14,7 @@ export const Colors = {
   iconColor: 'rgba(255, 255, 255, 0.5)',
   iconColorActive: '#FFFFFF',
   titleColor: '#FFFFFF',
+  background: 'rgb(32, 32, 32)',
 };
 
 export const Fonts = {
@@ -54,6 +55,6 @@ export const CategoryIDs: MappedTagCategories = {
   character: 4,
 };
 
-export const filteredTags = new Set(['banned_artist']);
+export const filteredTags = new Set(['banned_artist', 'greyscale', '4koma']);
 
 export const supportedFormats = new Set(['jpg', 'png']);

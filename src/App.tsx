@@ -5,7 +5,7 @@ import { RootStackParamList } from './types';
 
 /* Screens */
 import Home from './components/Home';
-import Posts from './components/Posts';
+import Tags from './components/tags/Tags';
 import Post from './components/Post';
 
 import StatusBar from './StatusBar';
@@ -24,7 +24,7 @@ const App = () => {
             initialRouteName="home"
             screenOptions={{ headerShown: false }}>
             <Stack.Screen name="home" component={Home} />
-            <Stack.Screen name="posts" component={Posts} />
+            <Stack.Screen name="tags" component={Tags} />
             <Stack.Screen name="post" component={Post} />
           </Stack.Navigator>
         </NavigationContainer>

@@ -5,11 +5,12 @@ import AppContext from './AppContext';
 
 const StatusBar = () => {
   const visibility = useContext(AppContext).appLoading;
+  console.log(visibility);
   return (
     <ReactNativeStatusBar
-      translucent
+      translucent={!visibility}
       backgroundColor={Colors.menuColor}
-      hidden={!visibility}
+      hidden={visibility}
     />
   );
 };

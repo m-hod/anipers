@@ -126,7 +126,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
                 style={styles.tag}
                 activeOpacity={0.5}
                 onPress={() => {
-                  navigation.navigate('posts', { tag: el.item.name });
+                  navigation.navigate('tags', { tag: el.item.name });
                 }}>
                 <ScrollView style={styles.tagNameContainer} horizontal>
                   <Text style={[styles.tagText]}>
