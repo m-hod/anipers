@@ -1,4 +1,4 @@
-import { BooruAPIResponseTag, BooruResponsePost } from './types';
+import { BooruAPIResponseTag, BooruResponsePost, TagRange } from './types';
 import { filteredTags } from './constants';
 
 /**
@@ -35,8 +35,14 @@ export const getRandomPostByTag = async (
 
 export const getTagPosts = async (
   tagName: string,
+  page: number,
+  random?: boolean,
 ): Promise<BooruResponsePost[]> => {
-  return await fetch(`${APIRoute}/posts.json?limit=51&tags=${tagName}`)
+  return await fetch(
+    `${APIRoute}/posts.json?limit=100&page=${page}&tags=${tagName}&random=${
+      random ? 'true' : 'false'
+    }`,
+  )
     .then((response) => response.json())
     .catch((e) => console.warn(e));
 };

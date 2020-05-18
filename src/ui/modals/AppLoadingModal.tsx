@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Layout } from '../../constants';
-import Loading from '../animations/Loading';
 import AppContext from '../../AppContext';
 
 const AppLoadingModal = () => {
@@ -10,7 +9,7 @@ const AppLoadingModal = () => {
   return (
     <Modal visible={visibility}>
       <View style={styles.pageContainer}>
-        <Loading loadingState={true} size={50} />
+        <ActivityIndicator size="large" />
       </View>
     </Modal>
   );
