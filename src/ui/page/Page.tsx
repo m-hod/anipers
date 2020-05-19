@@ -1,11 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  Layout,
-  statusBarHeight,
-  menuBarHeight,
-  Colors,
-} from '../../constants';
+import { Layout, statusBarHeight, Colors } from '../../constants';
 
 function Page({
   children,
@@ -29,7 +24,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingVertical: statusBarHeight + menuBarHeight + 25,
+    paddingVertical: statusBarHeight,
     position: 'relative',
     zIndex: 1,
   },

@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useContext,
   useRef,
+  useMemo,
 } from 'react';
 import {
   Text,
@@ -16,9 +17,14 @@ import {
 } from 'react-native';
 import { RootStackParamList, BooruResponsePost } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import {
-  Layout,
+  useRoute,
+  RouteProp,
+  useNavigation,
+  useFocusEffect,
+  useIsFocused,
+} from '@react-navigation/native';
+import {
   statusBarHeight,
   menuBarHeight,
   Colors,
@@ -40,15 +46,12 @@ function Tags() {
   const { tag } = useRoute<RouteProps>().params;
   const [isRandom, setIsRandom] = useState(false);
   const { images, setImages, page, setPage } = useContext(AppContext);
-  const promise = useCallback(() => getTagPosts(tag, page, isRandom), [
-    tag,
-    page,
-    isRandom,
-  ]);
+  const promise = useCallback(() => {
+    return getTagPosts(tag, page, isRandom);
+  }, [tag, page, isRandom]);
+
   const promiseState = usePromise(promise);
   const flatListRef = useRef(null);
-
-  console.log('rendering tags');
 
   useEffect(() => {
     if (promiseState && promiseState.data) {
@@ -103,12 +106,27 @@ function Tags() {
   return (
     <Page>
       <TopNav />
-      {renderPostList()}
-      {(() => {
-        if (!promiseState) return null;
-        if (promiseState.status === 'loading') return <ActivityIndicator />;
-        if (promiseState.status === 'error') return <Text>Error!</Text>;
-      })()}
+      <View style={styles.pageContainer}>
+        {renderPostList()}
+        {(() => {
+          if (images.size) return null;
+          if (!promiseState) return null;
+          if (promiseState.status === 'loading') {
+            return (
+              <View style={styles.fillContainer}>
+                <ActivityIndicator size="large" />
+              </View>
+            );
+          }
+          if (promiseState.status === 'error') {
+            return (
+              <View style={styles.fillContainer}>
+                <Text>Error!</Text>
+              </View>
+            );
+          }
+        })()}
+      </View>
       <View style={styles.bottomNav}>
         <TouchableOpacity
           onPress={() => {
@@ -140,16 +158,16 @@ export default Tags;
 
 const styles = StyleSheet.create({
   pageContainer: {
-    ...Layout.pageContainer,
-    backgroundColor: Colors.background,
-    justifyContent: 'flex-start',
+    flex: 1,
+    paddingVertical: menuBarHeight,
+  },
+  fillContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: statusBarHeight + menuBarHeight + 25,
-    position: 'relative',
-    zIndex: 1,
   },
   flatListContainer: {
-    height: WindowHeight - (menuBarHeight * 1.5 + statusBarHeight) - 10,
+    height: WindowHeight - (menuBarHeight * 1.5 + statusBarHeight) - 20,
   },
   listContainer: {
     padding: 5,

@@ -19,6 +19,16 @@ export const parseTagName = (tagName: string) => {
   return parsedTagName;
 };
 
+/**
+ * Replace spaces with underscores
+ * Lower case all words
+ * @param tagName
+ */
+export const reverseParseTagName = (tagName: string) => {
+  const parsedTagName = tagName.replace(/ /g, '_').toLowerCase();
+  return parsedTagName;
+};
+
 export const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * Math.floor(max));
 };
