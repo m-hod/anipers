@@ -21,15 +21,15 @@ import {
   WindowHeight,
   WindowWidth,
 } from '../constants';
-import { parseTagName, truncateNumber } from '../utils';
 import { usePromise } from '../hooks/usePromise';
 import { getMostPopularTags, getRandomPostByTag } from '../API';
 import { TagCategories, RootStackParamList } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Loading from '../ui/animations/Loading';
 import AppContext from '../AppContext';
+import TagTab from '../ui/components/TagTab';
+import IconButton from '../ui/components/IconButton';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -122,21 +122,13 @@ function TagsGroup({ category }: { category: TagCategories }) {
               return null;
             }
             return (
-              <TouchableOpacity
-                style={styles.tag}
-                activeOpacity={0.5}
-                onPress={() => {
+              <TagTab
+                key={el.item.id}
+                tag={el.item}
+                navigate={() => {
                   navigation.navigate('tags', { tag: el.item.name });
-                }}>
-                <ScrollView style={styles.tagNameContainer} horizontal>
-                  <Text style={[styles.tagText]}>
-                    {parseTagName(el.item.name)}
-                  </Text>
-                </ScrollView>
-                <Text style={[styles.tagText, styles.tagTextPostCount]}>
-                  {truncateNumber(el.item.post_count)}
-                </Text>
-              </TouchableOpacity>
+                }}
+              />
             );
           }}
           keyExtractor={(item) => item.id.toString()}
@@ -196,12 +188,21 @@ function HomeBottomNav({
 
   return (
     <View style={styles.bottomNav}>
-      <TouchableOpacity
+      <IconButton
+        icon="image"
+        label="test"
+        size={36}
+        action={() => {
+          navigation.navigate('post', { imageUrl });
+        }}
+        primary
+      />
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.navigate('post', { imageUrl });
         }}>
         <Icon name="image" size={36} style={styles.bottomNavIcon} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         onPress={() => {
           setCount((prevCount: number) => prevCount + 1);
@@ -232,31 +233,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     height: Dimensions.get('window').height / 2,
     overflow: 'scroll',
-  },
-  tag: {
-    marginVertical: 10,
-    marginHorizontal: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    backgroundColor: Colors.menuColorDark,
-    width: 275,
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  tagText: {
-    color: 'white',
-    fontSize: 20,
-  },
-  tagNameContainer: {
-    flex: 9,
-    width: 275 * 0.5,
-  },
-  tagTextPostCount: {
-    maxWidth: 75,
-    textAlign: 'right',
   },
   image: {
     ...Layout.containerOverlay,

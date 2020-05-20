@@ -7,6 +7,7 @@ import { RootStackParamList } from './types';
 import Home from './components/Home';
 import Tags from './components/tags/Tags';
 import Post from './components/Post';
+import Results from './components/search/Results';
 
 import StatusBar from './StatusBar';
 import AppLoadingModal from './ui/modals/AppLoadingModal';
@@ -26,6 +27,7 @@ const App = () => {
             <Stack.Screen name="home" component={Home} />
             <Stack.Screen name="tags" component={Tags} />
             <Stack.Screen name="post" component={Post} />
+            <Stack.Screen name="results" component={Results} />
           </Stack.Navigator>
         </NavigationContainer>
         <AppLoadingModal />

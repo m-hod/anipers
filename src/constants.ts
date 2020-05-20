@@ -15,6 +15,7 @@ export const Colors = {
   iconColorActive: '#FFFFFF',
   titleColor: '#FFFFFF',
   background: 'rgb(32, 32, 32)',
+  modalPopover: 'rgba(0, 0, 0, 0.25)',
 };
 
 export const Fonts = {

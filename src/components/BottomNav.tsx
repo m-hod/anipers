@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
-import IconButton from './IconButton';
+import IconButton from '../ui/components/IconButton/IconButton';
 import { Colors, menuBarHeight } from '../constants';
 
 function BottomNav() {

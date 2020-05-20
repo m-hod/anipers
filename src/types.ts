@@ -27,4 +27,5 @@ export type RootStackParamList = {
   home: undefined;
   tags: { tag: string };
   post: { imageUrl: string };
+  results: { query: string };
 };

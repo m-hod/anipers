@@ -1,5 +1,5 @@
-import { BooruAPIResponseTag, BooruResponsePost, TagRange } from './types';
-import { filteredTags } from './constants';
+import { BooruAPIResponseTag, BooruResponsePost } from './types';
+// import { filteredTags } from './constants';
 
 /**
  * Booru API Search Rules
@@ -9,6 +9,8 @@ import { filteredTags } from './constants';
  */
 
 const APIRoute = 'https://safebooru.donmai.us';
+
+/* Tags */
 
 export const getMostPopularTags = async (
   category: number,
@@ -22,6 +24,18 @@ export const getMostPopularTags = async (
     .then((response) => response.json())
     .catch((e) => console.warn(e));
 };
+
+export const searchTags = async (
+  tagName: string,
+): Promise<BooruAPIResponseTag[]> => {
+  return await fetch(
+    `${APIRoute}/tags.json?limit=10&search[order]=count&search[name_matches]=${tagName}*`,
+  )
+    .then((response) => response.json())
+    .catch((e) => console.warn(e));
+};
+
+/* Posts */
 
 export const getRandomPostByTag = async (
   tagName: string,

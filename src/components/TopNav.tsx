@@ -9,8 +9,14 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { statusBarHeight, Colors, menuBarHeight } from '../constants';
 import { reverseParseTagName } from '../utils';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from 'src/types';
+import { useNavigation } from '@react-navigation/native';
+
+type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 
 function TopNav() {
+  const navigation = useNavigation<NavigationProps>();
   const [searchIsVisible, setSearchVisible] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -31,7 +37,9 @@ function TopNav() {
             setQuery(e);
           }}
           onSubmitEditing={() => {
-            console.log(reverseParseTagName(query));
+            navigation.navigate('results', {
+              query: reverseParseTagName(query),
+            });
           }}
           onBlur={() => {
             setSearchVisible(false);
