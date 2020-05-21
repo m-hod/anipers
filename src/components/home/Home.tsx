@@ -8,7 +8,7 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import TopNav from '../TopNav';
+import TopNav from '../search/TopNav';
 import {
   statusBarHeight,
   menuBarHeight,

@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { searchTags } from '../../API';
 import { usePromise } from '../../hooks/usePromise';
-import Page from '../../ui/page';
+import Page from 'src/ui/components/Page';
 import {
   Text,
   View,

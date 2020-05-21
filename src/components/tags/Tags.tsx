@@ -25,8 +25,8 @@ import {
 } from '../../constants';
 import { getTagPosts } from '../../API';
 import { usePromise } from '../../hooks/usePromise';
-import TopNav from '../TopNav';
-import Page from '../../ui/page';
+import TopNav from '../search/TopNav';
+import Page from 'src/ui/components/Page';
 import AppContext from '../../AppContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';

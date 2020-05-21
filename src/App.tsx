@@ -6,7 +6,7 @@ import { RootStackParamList } from './types';
 /* Screens */
 import Home from './components/home/Home';
 import Tags from './components/tags/Tags';
-import Wallpaper from './components/Wallpaper';
+import Wallpaper from './components/wallpaper/Wallpaper';
 import Results from './components/search/Results';
 
 import StatusBar from './StatusBar';

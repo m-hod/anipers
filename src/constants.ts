@@ -1,4 +1,4 @@
-import { StatusBar, Platform, Dimensions } from 'react-native';
+import { StatusBar, Platform, Dimensions, TextStyle } from 'react-native';
 import { MappedTagCategories } from './types';
 
 export const statusBarHeight =
@@ -18,7 +18,7 @@ export const Colors = {
   modalPopover: 'rgba(0, 0, 0, 0.25)',
 };
 
-export const Fonts = {
+export const Fonts: { [key: string]: TextStyle } = {
   titleFont: {
     color: Colors.titleColor,
     fontWeight: 'bold',
@@ -31,7 +31,6 @@ export const Fonts = {
   },
   altTitleFont: {
     color: Colors.titleColor,
-    // fontWeight: 'bold',
     fontSize: 20,
   },
 };

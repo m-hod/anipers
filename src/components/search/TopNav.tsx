@@ -7,7 +7,7 @@ import {
   TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { statusBarHeight, Colors, menuBarHeight } from '../constants';
+import { statusBarHeight, Colors, menuBarHeight } from '../../constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
 import { useNavigation } from '@react-navigation/native';
