@@ -1,18 +1,26 @@
-import { StatusBar, Platform, Dimensions, TextStyle } from 'react-native';
+import {
+  StatusBar,
+  Platform,
+  Dimensions,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 import { MappedTagCategories } from './types';
 
+export const WindowHeight = Dimensions.get('window').height;
+export const WindowWidth = Dimensions.get('window').width;
 export const statusBarHeight =
   Platform.OS === 'android' && StatusBar.currentHeight
     ? StatusBar.currentHeight
     : 25;
-
 export const menuBarHeight = 50;
 
-export const Colors = {
+export const Colors: { [key: string]: string } = {
   menuColor: 'rgba(76, 76, 76, 0.75)',
   menuColorDark: 'rgba(0, 0, 0, 0.5)',
   iconColor: 'rgba(255, 255, 255, 0.5)',
   iconColorActive: '#FFFFFF',
+  iconColorInactive: 'rgba(255, 255, 255, 0.5)',
   titleColor: '#FFFFFF',
   background: 'rgb(32, 32, 32)',
   modalPopover: 'rgba(0, 0, 0, 0.25)',
@@ -31,11 +39,12 @@ export const Fonts: { [key: string]: TextStyle } = {
   },
   altTitleFont: {
     color: Colors.titleColor,
+    fontWeight: 'bold',
     fontSize: 20,
   },
 };
 
-export const Layout = {
+export const Layout: { [key: string]: ViewStyle } = {
   containerOverlay: {
     flex: 1,
     position: 'absolute',
@@ -49,9 +58,6 @@ export const Layout = {
     width: Dimensions.get('window').width,
   },
 };
-
-export const WindowHeight = Dimensions.get('window').height;
-export const WindowWidth = Dimensions.get('window').width;
 
 export const CategoryIDs: MappedTagCategories = {
   general: 0,

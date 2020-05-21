@@ -1,8 +1,8 @@
 import React from 'react';
 import { Animated, StyleSheet } from 'react-native';
-import useSpinAnimation from '../../hooks/useSpinAnimation';
+import useSpinAnimation from 'src/hooks/useSpinAnimation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Colors } from '../../constants';
+import { Colors } from 'src/constants';
 
 const Loading = ({
   loadingState,

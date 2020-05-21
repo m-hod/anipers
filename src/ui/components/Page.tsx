@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Layout, statusBarHeight, Colors } from '../../constants';
+import { Layout, statusBarHeight, Colors } from 'src/constants';
 
 function Page({
   children,

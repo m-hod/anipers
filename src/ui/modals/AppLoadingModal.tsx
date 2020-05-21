@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Modal, StyleSheet, View, ActivityIndicator } from 'react-native';
-import { Layout } from '../../constants';
-import AppContext from '../../AppContext';
+import { Layout } from 'src/constants';
+import AppContext from 'src/AppContext';
 
 const AppLoadingModal = () => {
   const visibility = useContext(AppContext).appLoading;

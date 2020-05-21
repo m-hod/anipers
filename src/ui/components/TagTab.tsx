@@ -1,16 +1,18 @@
 import React from 'react';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
-import { Text, StyleSheet } from 'react-native';
-import { parseTagName, truncateNumber } from '../../utils';
-import { Colors } from '../../constants';
-import { BooruAPIResponseTag } from '../../types';
+import { Text, StyleSheet, View } from 'react-native';
+import { parseTagName, truncateNumber } from 'src/utils';
+import { Colors } from 'src/constants';
+import { BooruAPIResponseTag } from 'src/types';
 
 function TagTab({
   tag,
   navigate,
+  isHome,
 }: {
   tag: BooruAPIResponseTag;
   navigate: Function;
+  isHome?: boolean;
 }) {
   return (
     <TouchableOpacity
@@ -19,12 +21,16 @@ function TagTab({
       onPress={() => {
         navigate();
       }}>
-      <ScrollView style={styles.tagNameContainer} horizontal>
-        <Text style={[styles.tagText]}>{parseTagName(tag.name)}</Text>
-      </ScrollView>
-      <Text style={[styles.tagText, styles.tagTextPostCount]}>
-        {truncateNumber(tag.post_count)}
-      </Text>
+      <View style={styles.tagNameContainer}>
+        <ScrollView contentContainerStyle={styles.scrollView} horizontal>
+          <Text style={[styles.tagText]}>{parseTagName(tag.name, isHome)}</Text>
+        </ScrollView>
+      </View>
+      <View style={styles.postCountContainer}>
+        <Text style={styles.tagTextPostCount}>
+          {truncateNumber(tag.post_count)}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -36,7 +42,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 20,
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 10,
     borderRadius: 5,
     backgroundColor: Colors.menuColorDark,
     width: 275,
@@ -50,11 +57,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   tagNameContainer: {
-    flex: 9,
-    width: 275 * 0.5,
+    height: 50,
+    width: 275 * 0.75,
+  },
+  scrollView: {
+    overflow: 'hidden',
+    alignItems: 'center',
+  },
+  postCountContainer: {
+    width: 50,
+    height: 50,
+    padding: 5,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
   },
   tagTextPostCount: {
-    maxWidth: 75,
-    textAlign: 'right',
+    fontSize: 16,
+    color: 'white',
   },
 });

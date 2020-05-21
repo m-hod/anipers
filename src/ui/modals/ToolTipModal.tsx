@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet } from 'react-native';
-import { Colors, WindowWidth, WindowHeight } from '../../constants';
+import { Colors, WindowWidth, WindowHeight } from 'src/constants';
 
 function ToolTipModal({
   label,

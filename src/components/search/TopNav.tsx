@@ -7,7 +7,7 @@ import {
   TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { statusBarHeight, Colors, menuBarHeight } from '../../constants';
+import { statusBarHeight, Colors, menuBarHeight } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
 import { useNavigation } from '@react-navigation/native';
@@ -31,6 +31,8 @@ function TopNav() {
           autoFocus
           blurOnSubmit
           allowFontScaling
+          clearTextOnFocus
+          returnKeyType="search"
           clearButtonMode="while-editing"
           onChangeText={(e) => {
             setQuery(e);

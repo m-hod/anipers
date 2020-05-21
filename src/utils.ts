@@ -3,15 +3,26 @@
  * Replace underscores with spaces
  * Capitalize each word
  * @param tagName string following 'x_y' format
+ * @param removeBrackets optional, include if want to remove brackets
  */
-export const parseTagName = (tagName: string) => {
-  const spacedTagName = tagName.replace(/\([a-z_]*\)/gi, '');
-  const spacedTagNameWithBracketsRemoved = spacedTagName.replace(/[_]/g, ' ');
-  const tagArray = spacedTagNameWithBracketsRemoved.match(/[^\s/]+/gi);
+export const parseTagName = (tagName: string, removeBrackets?: boolean) => {
+  const tagNameWithBracketsRemoved = tagName.replace(/\([a-z_]*\)/gi, '');
+  const tagNameWithSpacesRemoved = (removeBrackets
+    ? tagNameWithBracketsRemoved
+    : tagName
+  ).replace(/[_]/g, ' ');
+
+  const tagArray = tagNameWithSpacesRemoved.match(/[^\s/]+/gi);
   let parsedTagName = '';
   tagArray?.forEach((el, i) => {
-    const upperCasedCharacter = el[0].toUpperCase();
-    const newEl = `${upperCasedCharacter}${el.slice(1)}`;
+    let newEl = '';
+    if (el[0] === '(') {
+      const upperCasedCharacter = el[1].toUpperCase();
+      newEl = `(${upperCasedCharacter}${el.slice(2)}`;
+    } else {
+      const upperCasedCharacter = el[0].toUpperCase();
+      newEl = `${upperCasedCharacter}${el.slice(1)}`;
+    }
     parsedTagName = `${parsedTagName}${newEl}${
       i !== tagArray.length ? ' ' : ''
     }`;

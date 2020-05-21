@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import TopNav from '../search/TopNav';
 import {
@@ -105,7 +106,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {
-      return <Text>Loading...</Text>;
+      return <ActivityIndicator />;
     }
 
     if (promiseState.status === 'error') {
@@ -128,6 +129,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
                 navigate={() => {
                   navigation.navigate('tags', { tag: el.item.name });
                 }}
+                isHome
               />
             );
           }}
@@ -227,6 +229,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     height: Dimensions.get('window').height / 2,
     overflow: 'scroll',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     ...Layout.containerOverlay,

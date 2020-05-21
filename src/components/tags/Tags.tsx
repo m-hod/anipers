@@ -22,12 +22,12 @@ import {
   Colors,
   WindowHeight,
   WindowWidth,
-} from '../../constants';
-import { getTagPosts } from '../../API';
-import { usePromise } from '../../hooks/usePromise';
+} from 'src/constants';
+import { getTagPosts } from 'src/API';
+import { usePromise } from 'src/hooks/usePromise';
 import TopNav from '../search/TopNav';
 import Page from 'src/ui/components/Page';
-import AppContext from '../../AppContext';
+import AppContext from 'src/AppContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
 
