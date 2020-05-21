@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { statusBarHeight, Colors, menuBarHeight } from '../constants';
-import { reverseParseTagName } from '../utils';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
 import { useNavigation } from '@react-navigation/native';
@@ -38,7 +37,7 @@ function TopNav() {
           }}
           onSubmitEditing={() => {
             navigation.navigate('results', {
-              query: reverseParseTagName(query),
+              query,
             });
           }}
           onBlur={() => {

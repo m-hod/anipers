@@ -5,9 +5,17 @@ import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { searchTags } from '../../API';
 import { usePromise } from '../../hooks/usePromise';
 import Page from '../../ui/page';
-import { Text, View } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  Dimensions,
+} from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import TagTab from '../../ui/components/TagTab';
+import { reverseParseTagName } from '../../utils';
+import { Fonts } from '../../constants';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 type RouteProps = RouteProp<RootStackParamList, 'results'>;
@@ -16,12 +24,14 @@ function Results() {
   const navigation = useNavigation<NavigationProps>();
   const { query } = useRoute<RouteProps>().params;
 
-  const promise = useCallback(() => searchTags(query), [query]);
+  const promise = useCallback(() => searchTags(reverseParseTagName(query)), [
+    query,
+  ]);
   const promiseState = usePromise(promise);
 
   const renderTagTabs = () => {
     if (promiseState.status === 'loading') {
-      return <Text>Loading...</Text>;
+      return <ActivityIndicator />;
     }
 
     if (promiseState.status === 'error') {
@@ -50,10 +60,26 @@ function Results() {
   };
 
   return (
-    <Page>
-      <View>{renderTagTabs()}</View>
+    <Page centered>
+      <Text style={styles.altTitleFont}>Showing closest matches for:</Text>
+      <Text style={styles.subTitle}>{query}</Text>
+      <View style={styles.tagContainer}>{renderTagTabs()}</View>
     </Page>
   );
 }
 
 export default Results;
+
+const styles = StyleSheet.create({
+  altTitleFont: {
+    ...Fonts.altTitleFont,
+  },
+  subTitle: {
+    ...Fonts.subTitleFont,
+  },
+  tagContainer: {
+    marginTop: 20,
+    height: Dimensions.get('window').height / 1.5,
+    overflow: 'scroll',
+  },
+});

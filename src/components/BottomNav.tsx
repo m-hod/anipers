@@ -1,15 +1,15 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
-import IconButton from '../ui/components/IconButton/IconButton';
+import IconButton from '../ui/components/IconButton';
 import { Colors, menuBarHeight } from '../constants';
 
 function BottomNav() {
   return (
     <>
       <View style={styles.container}>
-        <IconButton icon="save" />
+        {/* <IconButton icon="save" />
         <IconButton icon="slideshow" />
-        <IconButton icon="wallpaper" />
+        <IconButton icon="wallpaper" /> */}
       </View>
     </>
   );

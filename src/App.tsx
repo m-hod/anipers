@@ -4,9 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 
 /* Screens */
-import Home from './components/Home';
+import Home from './components/home/Home';
 import Tags from './components/tags/Tags';
-import Post from './components/Post';
+import Wallpaper from './components/Wallpaper';
 import Results from './components/search/Results';
 
 import StatusBar from './StatusBar';
@@ -26,7 +26,7 @@ const App = () => {
             screenOptions={{ headerShown: false }}>
             <Stack.Screen name="home" component={Home} />
             <Stack.Screen name="tags" component={Tags} />
-            <Stack.Screen name="post" component={Post} />
+            <Stack.Screen name="wallpaper" component={Wallpaper} />
             <Stack.Screen name="results" component={Results} />
           </Stack.Navigator>
         </NavigationContainer>

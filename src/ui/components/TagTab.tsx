@@ -1,9 +1,9 @@
 import React from 'react';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 import { Text, StyleSheet } from 'react-native';
-import { parseTagName, truncateNumber } from '../../../utils';
-import { Colors } from '../../../constants';
-import { BooruAPIResponseTag } from '../../../types';
+import { parseTagName, truncateNumber } from '../../utils';
+import { Colors } from '../../constants';
+import { BooruAPIResponseTag } from '../../types';
 
 function TagTab({
   tag,

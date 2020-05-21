@@ -5,11 +5,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
   Dimensions,
 } from 'react-native';
-import TopNav from './TopNav';
+import TopNav from '../TopNav';
 import {
   statusBarHeight,
   menuBarHeight,
@@ -20,16 +19,17 @@ import {
   Layout,
   WindowHeight,
   WindowWidth,
-} from '../constants';
-import { usePromise } from '../hooks/usePromise';
-import { getMostPopularTags, getRandomPostByTag } from '../API';
+} from 'src/constants';
+import { usePromise } from 'src/hooks/usePromise';
+import { getMostPopularTags, getRandomPostByTag } from 'src/API';
 import { TagCategories, RootStackParamList } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
-import Loading from '../ui/animations/Loading';
-import AppContext from '../AppContext';
-import TagTab from '../ui/components/TagTab';
-import IconButton from '../ui/components/IconButton';
+import Loading from 'src/ui/animations/Loading';
+import AppContext from 'src/AppContext';
+import TagTab from 'src/ui/components/TagTab';
+import IconButton from 'src/ui/components/IconButton';
+import FastImage from 'react-native-fast-image';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -144,7 +144,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
       <View style={styles.tagContainer}>{renderTags()}</View>
       {!!heroImageUrl[0] &&
         heroImageUrl.map((imageUrl) => (
-          <Image
+          <FastImage
             key={imageUrl}
             source={{ uri: imageUrl }}
             style={[styles.image]}
@@ -190,19 +190,13 @@ function HomeBottomNav({
     <View style={styles.bottomNav}>
       <IconButton
         icon="image"
-        label="test"
+        label="Navigate to Image"
         size={36}
         action={() => {
-          navigation.navigate('post', { imageUrl });
+          navigation.navigate('wallpaper', { imageUrl });
         }}
         primary
       />
-      {/* <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('post', { imageUrl });
-        }}>
-        <Icon name="image" size={36} style={styles.bottomNavIcon} />
-      </TouchableOpacity> */}
       <TouchableOpacity
         onPress={() => {
           setCount((prevCount: number) => prevCount + 1);

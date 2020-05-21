@@ -1,14 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Image, View } from 'react-native';
-import { Layout } from '../constants';
+import { Layout } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, BooruResponsePost } from 'src/types';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import AppContext from '../AppContext';
+import AppContext from 'src/AppContext';
 import { FlatList } from 'react-native-gesture-handler';
+import FastImage from 'react-native-fast-image';
 
-type NavigationProps = StackNavigationProp<RootStackParamList, 'post'>;
-type RouteProps = RouteProp<RootStackParamList, 'post'>;
+type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
+type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
 
 //create artificial array from index, prev, and next items in images context
 
@@ -16,7 +17,7 @@ type RouteProps = RouteProp<RootStackParamList, 'post'>;
 //include onendreach etc
 /* hide status bar through context */
 
-function Post() {
+function Wallpaper() {
   const { imageUrl } = useRoute<RouteProps>().params;
   // const { images, setImages, page, setPage } = useContext(AppContext);
   // const [activeImage, setActiveImage] = useState<BooruResponsePost>(
@@ -25,7 +26,7 @@ function Post() {
 
   return (
     <View style={styles.pageContainer}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      <FastImage source={{ uri: imageUrl }} style={styles.image} />
       {/* {images.size && (
         <FlatList
           data={[...images.values()]}
@@ -50,7 +51,7 @@ function Post() {
   );
 }
 
-export default Post;
+export default Wallpaper;
 
 const styles = StyleSheet.create({
   pageContainer: {

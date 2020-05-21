@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Colors } from '../../../constants';
-import ToolTipModal from '../../modals/ToolTipModal';
+import { Colors } from '../../constants';
+import ToolTipModal from '../modals/ToolTipModal';
 
 function IconButton({
   icon,

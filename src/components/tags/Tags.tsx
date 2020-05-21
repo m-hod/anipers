@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useContext,
   useRef,
-  useMemo,
 } from 'react';
 import {
   Text,
@@ -12,18 +11,11 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
 } from 'react-native';
 import { RootStackParamList, BooruResponsePost } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import {
-  useRoute,
-  RouteProp,
-  useNavigation,
-  useFocusEffect,
-  useIsFocused,
-} from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import {
   statusBarHeight,
   menuBarHeight,
@@ -37,6 +29,7 @@ import TopNav from '../TopNav';
 import Page from '../../ui/page';
 import AppContext from '../../AppContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FastImage from 'react-native-fast-image';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'tags'>;
 type RouteProps = RouteProp<RootStackParamList, 'tags'>;
@@ -78,10 +71,15 @@ function Tags() {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('post', { imageUrl: el.item.file_url });
+                    navigation.navigate('wallpaper', {
+                      imageUrl: el.item.file_url,
+                    });
                   }}>
-                  <Image
-                    source={{ uri: el.item.file_url }}
+                  <FastImage
+                    source={{
+                      uri: el.item.file_url,
+                      priority: FastImage.priority.high,
+                    }}
                     style={[styles.image]}
                   />
                 </TouchableOpacity>
@@ -145,7 +143,7 @@ function Tags() {
         <TouchableOpacity
           onPress={() => {
             //@ts-ignore
-            flatListRef.current?.scrollToIndex({ index: 0, animated: true });
+            flatListRef.current?.scrollToIndex({ index: 0 });
           }}>
           <Icon name="expand-less" size={42} style={styles.bottomNavIcon} />
         </TouchableOpacity>

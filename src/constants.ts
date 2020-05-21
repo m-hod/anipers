@@ -29,6 +29,11 @@ export const Fonts = {
     fontWeight: 'bold',
     fontSize: 32,
   },
+  altTitleFont: {
+    color: Colors.titleColor,
+    // fontWeight: 'bold',
+    fontSize: 20,
+  },
 };
 
 export const Layout = {
