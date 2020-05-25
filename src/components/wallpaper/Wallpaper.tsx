@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { StyleSheet, Image, View, Dimensions } from 'react-native';
-import { Layout, menuBarHeight } from 'src/constants';
+import { Layout, menuBarHeight, WindowHeight } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, BooruResponsePost } from 'src/types';
+import { RootStackParamList, BooruResponsePost, ActiveImage } from 'src/types';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import AppContext from 'src/AppContext';
 import {
@@ -21,10 +21,11 @@ type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
 
 //fix up images
 //include onendreach etc
-/* hide status bar through context */
+
+// image resolution destroyed by crop - save crop params and adjust raw image by them instead of cropped compressed image?
 
 function Wallpaper() {
-  const { imageUrl } = useRoute<RouteProps>().params;
+  const { imageUrl, imageId } = useRoute<RouteProps>().params;
   const [fullscreen, setFullscreen] = useState(false);
   const {
     images,
@@ -34,12 +35,13 @@ function Wallpaper() {
     activeImage,
     setActiveImage,
   } = useContext(AppContext);
-  // const [activeImage, setActiveImage] = useState<BooruResponsePost>(
-  //   images.get(imageUrl)!,
-  // );
 
-  // image resolution destroyed by crop
-  // replace image in the list (wherever it is) with the edited one - can access with raw path so don't need to loop!
+  const onViewRef = useRef((info) => {
+    if (activeImage.raw !== info.viewableItems[0].item.file_url) {
+      setActiveImage({ raw: info.viewableItems[0].item.file_url });
+    }
+  });
+  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   useEffect(() => {
     if (imageUrl !== activeImage.raw) {
@@ -57,35 +59,38 @@ function Wallpaper() {
 
   return (
     <View style={styles.pageContainer}>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          setFullscreen(!fullscreen);
-        }}>
-        <FastImage
-          source={{ uri: activeImage.edited ? activeImage.edited : imageUrl }}
-          style={[styles.image]}
-        />
-      </TouchableWithoutFeedback>
-      {/* {images.size && (
+      {images.size && (
         <FlatList
           data={[...images.values()]}
           renderItem={(el) => (
-            <Image source={{ uri: el.item.file_url }} style={styles.image} />
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setFullscreen(!fullscreen);
+              }}>
+              <FastImage
+                source={{
+                  uri: activeImage.edited
+                    ? activeImage.edited
+                    : el.item.file_url,
+                }}
+                style={[styles.image]}
+              />
+            </TouchableWithoutFeedback>
           )}
           initialScrollIndex={
-            [...images.values()].findIndex(
-              (post) => post.id === activeImage.id,
-            )!
+            [...images.values()].findIndex((post) => post.id === imageId)!
           }
           keyExtractor={(item) => item.id.toString()}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator
-          onEndReached={() => {
-            setPage(page + 1);
-          }}
+          viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+          onViewableItemsChanged={onViewRef.current}
+          // onEndReached={() => {
+          //   setPage(page + 1);
+          // }}
         />
-      )} */}
+      )}
       {!fullscreen && <BottomNav uri={imageUrl} />}
     </View>
   );

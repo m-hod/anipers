@@ -1,26 +1,22 @@
-import React, { useState, useContext } from 'react';
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  Image,
-  NativeModules,
-} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import IconButton from 'src/ui/components/IconButton';
 import {
   Colors,
   menuBarHeight,
-  iconSize,
   WindowWidth,
   WindowHeight,
 } from 'src/constants';
 import ImagePicker from 'react-native-image-crop-picker';
-import FastImage from 'react-native-fast-image';
 import AppContext from 'src/AppContext';
+import { BooruResponsePost, ActiveImage } from 'src/types';
 
 function BottomNav({ uri }: { uri: string }) {
-  const [localImage, setLocalImage] = useState('');
-  const { activeImage, setActiveImage } = useContext(AppContext);
+  const { activeImage, setActiveImage, setImages } = useContext(AppContext);
+
+  useEffect(() => {
+    console.log('active image changed');
+  }, [activeImage]);
 
   return (
     <>
@@ -35,11 +31,10 @@ function BottomNav({ uri }: { uri: string }) {
         />
         <IconButton
           icon="crop"
-          label="Edit Default Crop"
+          label="Edit Crop"
           action={async () => {
-            console.log('crop!');
             await ImagePicker.openCropper({
-              path: uri,
+              path: activeImage.raw,
               width: WindowWidth,
               height: WindowHeight,
               cropperToolbarTitle: 'Edit Image',
@@ -52,9 +47,24 @@ function BottomNav({ uri }: { uri: string }) {
             })
               .then((image) => {
                 console.log(image);
-                setActiveImage((prevState) => {
+                setActiveImage((prevState: ActiveImage) => {
                   const newState = { ...prevState };
                   newState.edited = image.path;
+                  return newState;
+                });
+                setImages((prevState: Map<string, BooruResponsePost>) => {
+                  const newState = new Map(prevState);
+                  console.log(newState);
+                  console.log(
+                    newState.set(
+                      uri,
+                      //@ts-ignore
+                      {
+                        ...newState.get(uri),
+                        file_url: image.path,
+                      },
+                    ),
+                  );
                   return newState;
                 });
               })
@@ -71,9 +81,6 @@ function BottomNav({ uri }: { uri: string }) {
           primary
         />
       </View>
-      {/* <View>
-        {localImage ? <FastImage source={{ uri: localImage }} /> : null}
-      </View> */}
     </>
   );
 }

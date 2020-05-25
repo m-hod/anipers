@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AppContext from './AppContext';
-import { BooruResponsePost } from './types';
+import { BooruResponsePost, ActiveImage } from './types';
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [appLoading, setAppLoading] = useState(true);
@@ -9,7 +9,9 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     new Map(),
   );
   const [statusBarVisibility, setStatusBarVisibility] = useState(false);
-  const [activeImage, setActiveImage] = useState({ raw: '' });
+  const [activeImage, setActiveImage] = useState<ActiveImage>({
+    raw: '',
+  });
 
   useEffect(() => {
     if (appLoading) {

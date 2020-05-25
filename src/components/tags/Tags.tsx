@@ -30,6 +30,7 @@ import Page from 'src/ui/components/Page';
 import AppContext from 'src/AppContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
+import IconButton from 'src/ui/components/IconButton';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'tags'>;
 type RouteProps = RouteProp<RootStackParamList, 'tags'>;
@@ -37,10 +38,10 @@ type RouteProps = RouteProp<RootStackParamList, 'tags'>;
 function Tags() {
   const navigation = useNavigation<NavigationProps>();
   const { tag } = useRoute<RouteProps>().params;
-  const [isRandom, setIsRandom] = useState(false);
+  const [isRandom, setIsRandom] = useState(0);
   const [page, setPage] = useState(0);
   const { images, setImages } = useContext(AppContext);
-  const promise = useCallback(() => getTagPosts(tag, page, isRandom), [
+  const promise = useCallback(() => getTagPosts(tag, page, !!isRandom), [
     tag,
     page,
     isRandom,
@@ -83,6 +84,7 @@ function Tags() {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('wallpaper', {
+                      imageId: el.item.id,
                       imageUrl: el.item.file_url,
                     });
                   }}>
@@ -137,27 +139,23 @@ function Tags() {
         })()}
       </View>
       <View style={styles.bottomNav}>
-        <TouchableOpacity
-          onPress={() => {
+        <IconButton
+          icon="shuffle"
+          label="Randomize"
+          action={() => {
             setImages(new Map());
-            setIsRandom(!isRandom);
-          }}>
-          <Icon
-            name="shuffle"
-            size={32}
-            style={[
-              styles.bottomNavIcon,
-              isRandom && styles.bottomNavIconActive,
-            ]}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
+            setIsRandom(isRandom + 1);
+          }}
+        />
+        <IconButton
+          icon="expand-less"
+          label="Scroll To Top"
+          size={42}
+          action={() => {
             //@ts-ignore
             flatListRef.current?.scrollToIndex({ index: 0 });
-          }}>
-          <Icon name="expand-less" size={42} style={styles.bottomNavIcon} />
-        </TouchableOpacity>
+          }}
+        />
       </View>
     </Page>
   );

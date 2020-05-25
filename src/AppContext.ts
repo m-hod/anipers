@@ -1,5 +1,5 @@
 import React from 'react';
-import { BooruResponsePost } from './types';
+import { BooruResponsePost, ActiveImage } from './types';
 
 const AppContext = React.createContext<{
   promises: Map<string, boolean>;
@@ -11,7 +11,7 @@ const AppContext = React.createContext<{
   setImages(arg: any): void;
   statusBarVisibility: boolean;
   setStatusBarVisibility(arg: boolean): void;
-  activeImage: { raw: string; edited?: string };
+  activeImage: ActiveImage;
   setActiveImage(arg: any): void;
 }>({
   appLoading: true,

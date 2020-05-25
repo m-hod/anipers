@@ -26,6 +26,11 @@ export type MappedTagCategories = {
 export type RootStackParamList = {
   home: undefined;
   tags: { tag: string };
-  wallpaper: { imageUrl: string };
+  wallpaper: { imageId: number; imageUrl: string };
   results: { query: string };
+};
+
+export type ActiveImage = {
+  raw: string;
+  edited?: string;
 };

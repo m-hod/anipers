@@ -24,7 +24,7 @@ export const Colors: { [key: string]: string } = {
   iconColorInactive: 'rgba(255, 255, 255, 0.5)',
   titleColor: '#FFFFFF',
   background: 'rgb(32, 32, 32)',
-  modalPopover: 'rgba(0, 0, 0, 0.25)',
+  modalPopover: 'rgba(0, 0, 0, 0.05)',
 };
 
 export const Fonts: { [key: string]: TextStyle } = {
@@ -42,6 +42,10 @@ export const Fonts: { [key: string]: TextStyle } = {
     color: Colors.titleColor,
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  regular: {
+    color: Colors.titleColor,
+    fontSize: 18,
   },
 };
 
