@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Colors } from 'src/constants';
+import { Colors, iconSize } from 'src/constants';
 import ToolTipModal from '../modals/ToolTipModal';
 
 function IconButton({
@@ -14,7 +14,7 @@ function IconButton({
 }: {
   icon: string;
   label: string;
-  size: number;
+  size?: number;
   action: Function;
   primary?: boolean;
   disabled?: boolean;
@@ -41,7 +41,7 @@ function IconButton({
             primary && styles.iconActive,
             disabled && styles.iconInactive,
           ]}
-          size={size}
+          size={size ? size : iconSize}
         />
       </TouchableOpacity>
       <ToolTipModal label={label} visibility={isTooltipVisible} />

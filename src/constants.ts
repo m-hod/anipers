@@ -14,6 +14,7 @@ export const statusBarHeight =
     ? StatusBar.currentHeight
     : 25;
 export const menuBarHeight = 50;
+export const iconSize = 32;
 
 export const Colors: { [key: string]: string } = {
   menuColor: 'rgba(76, 76, 76, 0.75)',

@@ -9,8 +9,10 @@ const AppContext = React.createContext<{
   // where string is the file_url
   images: Map<string, BooruResponsePost>;
   setImages(arg: any): void;
-  page: number;
-  setPage(arg: number): void;
+  statusBarVisibility: boolean;
+  setStatusBarVisibility(arg: boolean): void;
+  activeImage: { raw: string; edited?: string };
+  setActiveImage(arg: any): void;
 }>({
   appLoading: true,
   setAppLoading: () => {},
@@ -18,8 +20,10 @@ const AppContext = React.createContext<{
   setPromises: () => {},
   images: new Map(),
   setImages: () => {},
-  page: 0,
-  setPage: () => {},
+  statusBarVisibility: false,
+  setStatusBarVisibility: () => {},
+  activeImage: { raw: '' },
+  setActiveImage: () => {},
 });
 
 export default AppContext;

@@ -4,13 +4,12 @@ import { Colors } from './constants';
 import AppContext from './AppContext';
 
 const StatusBar = () => {
-  const visibility = useContext(AppContext).appLoading;
-  console.log(visibility);
+  const visibility = useContext(AppContext).statusBarVisibility;
   return (
     <ReactNativeStatusBar
-      translucent={!visibility}
+      translucent={visibility}
       backgroundColor={Colors.menuColor}
-      hidden={visibility}
+      hidden={!visibility}
     />
   );
 };

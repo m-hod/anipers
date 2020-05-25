@@ -38,10 +38,13 @@ function Tags() {
   const navigation = useNavigation<NavigationProps>();
   const { tag } = useRoute<RouteProps>().params;
   const [isRandom, setIsRandom] = useState(false);
-  const { images, setImages, page, setPage } = useContext(AppContext);
-  const promise = useCallback(() => {
-    return getTagPosts(tag, page, isRandom);
-  }, [tag, page, isRandom]);
+  const [page, setPage] = useState(0);
+  const { images, setImages } = useContext(AppContext);
+  const promise = useCallback(() => getTagPosts(tag, page, isRandom), [
+    tag,
+    page,
+    isRandom,
+  ]);
 
   const promiseState = usePromise(promise);
   const flatListRef = useRef(null);
@@ -50,11 +53,19 @@ function Tags() {
     if (promiseState && promiseState.data) {
       setImages((prevState: Map<string, BooruResponsePost>) => {
         if (promiseState.data!.length) {
-          const newState = new Map(prevState);
-          promiseState.data?.forEach((post) => {
-            newState.set(post.file_url, post);
-          });
-          return newState;
+          if (page === 0) {
+            const newState = new Map();
+            promiseState.data?.forEach((post) => {
+              newState.set(post.file_url, post);
+            });
+            return newState;
+          } else {
+            const newState = new Map(prevState);
+            promiseState.data?.forEach((post) => {
+              newState.set(post.file_url, post);
+            });
+            return newState;
+          }
         }
         return prevState;
       });

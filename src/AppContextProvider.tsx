@@ -8,13 +8,15 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [images, setImages] = useState<Map<string, BooruResponsePost>>(
     new Map(),
   );
-  const [page, setPage] = useState(0);
+  const [statusBarVisibility, setStatusBarVisibility] = useState(false);
+  const [activeImage, setActiveImage] = useState({ raw: '' });
 
   useEffect(() => {
     if (appLoading) {
       if (promises.size) {
         if (!Array.from(promises.values()).some((item) => item)) {
           setAppLoading(false);
+          setStatusBarVisibility(true);
           setPromises(new Map());
         }
       }
@@ -30,8 +32,10 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         setPromises,
         images,
         setImages,
-        page,
-        setPage,
+        statusBarVisibility,
+        setStatusBarVisibility,
+        activeImage,
+        setActiveImage,
       }}>
       {children}
     </AppContext.Provider>
