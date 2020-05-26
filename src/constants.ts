@@ -6,6 +6,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { MappedTagCategories } from './types';
+import RNFS from 'react-native-fs';
 
 export const WindowHeight = Dimensions.get('window').height;
 export const WindowWidth = Dimensions.get('window').width;
@@ -74,3 +75,7 @@ export const CategoryIDs: MappedTagCategories = {
 export const filteredTags = new Set(['banned_artist', 'greyscale', '4koma']);
 
 export const supportedFormats = new Set(['jpg', 'png']);
+
+export const wallpapersDirectoryPath = `${RNFS.DocumentDirectoryPath}/wallpapers`;
+export const referencesFilePath = `${RNFS.DocumentDirectoryPath}/wallpapers/references`;
+export const downloadsDirectoryPath = RNFS.DownloadDirectoryPath;

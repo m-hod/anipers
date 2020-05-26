@@ -17,9 +17,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
 type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
 
-//create artificial array from index, prev, and next items in images context
-
-//fix up images
+//fix up homepage images
 //include onendreach etc
 
 // image resolution destroyed by crop - save crop params and adjust raw image by them instead of cropped compressed image?
@@ -36,7 +34,7 @@ function Wallpaper() {
     setActiveImage,
   } = useContext(AppContext);
 
-  const onViewRef = useRef((info) => {
+  const onViewRef = useRef((info: any) => {
     if (activeImage.raw !== info.viewableItems[0].item.file_url) {
       setActiveImage({ raw: info.viewableItems[0].item.file_url });
     }

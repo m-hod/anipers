@@ -70,3 +70,13 @@ export const truncateNumber = (num: number) => {
     return `${numString[0]}${numString[1]}m+`;
   }
 };
+
+/**
+ * Get the trailing id and ext from a booru file url
+ * eg: https://testbooru.donmai.us/data/30104268935d83777841410d43057732.png => 30104268935d83777841410d43057732.png
+ * @param fileUrl
+ */
+export const parseFileUrl = (fileUrl: string) => {
+  const urlArray = fileUrl.split('/');
+  return urlArray[urlArray.length - 1];
+};

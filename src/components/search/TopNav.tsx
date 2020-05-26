@@ -11,6 +11,7 @@ import { statusBarHeight, Colors, menuBarHeight } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
 import { useNavigation } from '@react-navigation/native';
+import Saved from '../saved/Saved';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 
@@ -57,6 +58,7 @@ function TopNav() {
           style={[styles.icon, searchIsVisible && styles.iconActive]}
         />
       </TouchableOpacity>
+      <Saved />
     </View>
   );
 }
