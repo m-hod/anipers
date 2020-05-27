@@ -12,19 +12,25 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
 import { useNavigation } from '@react-navigation/native';
 import Saved from '../saved/Saved';
+import IconButton from 'src/ui/components/IconButton';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 
-function TopNav() {
+function TopNav({ folderActive }: { folderActive?: boolean }) {
   const navigation = useNavigation<NavigationProps>();
   const [searchIsVisible, setSearchVisible] = useState(false);
   const [query, setQuery] = useState('');
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
-        <Icon name="menu" size={32} style={styles.icon} />
-      </TouchableOpacity>
+      <IconButton
+        label="Saved Wallpapers"
+        icon="folder"
+        action={() => {
+          navigation.navigate('collections');
+        }}
+        primary={folderActive}
+      />
       {searchIsVisible && (
         <TextInput
           style={styles.searchBar}
@@ -48,16 +54,14 @@ function TopNav() {
           }}
         />
       )}
-      <TouchableOpacity
-        onPress={() => {
+      <IconButton
+        label="Search for Tags"
+        icon="search"
+        primary={searchIsVisible}
+        action={() => {
           setSearchVisible(!searchIsVisible);
-        }}>
-        <Icon
-          name="search"
-          size={32}
-          style={[styles.icon, searchIsVisible && styles.iconActive]}
-        />
-      </TouchableOpacity>
+        }}
+      />
       <Saved />
     </View>
   );

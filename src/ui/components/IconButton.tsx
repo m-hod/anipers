@@ -11,6 +11,7 @@ function IconButton({
   action,
   primary,
   disabled,
+  variant,
 }: {
   icon: string;
   label: string;
@@ -18,6 +19,7 @@ function IconButton({
   action: Function;
   primary?: boolean;
   disabled?: boolean;
+  variant?: 'saved' | undefined;
 }) {
   const [isTooltipVisible, setTooltipVisibility] = useState(false);
 
@@ -40,6 +42,7 @@ function IconButton({
             styles.icon,
             primary && styles.iconActive,
             disabled && styles.iconInactive,
+            variant && styles[variant],
           ]}
           size={size ? size : iconSize}
         />
@@ -60,5 +63,8 @@ const styles = StyleSheet.create({
   },
   iconInactive: {
     color: Colors.iconColorInactive,
+  },
+  saved: {
+    color: Colors.iconColorSavedActive,
   },
 });

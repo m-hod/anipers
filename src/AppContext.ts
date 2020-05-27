@@ -13,6 +13,8 @@ const AppContext = React.createContext<{
   setStatusBarVisibility(arg: boolean): void;
   activeImage: ActiveImage;
   setActiveImage(arg: any): void;
+  savedImages: Set<string>;
+  setSavedImages(arg: any): void;
 }>({
   appLoading: true,
   setAppLoading: () => {},
@@ -24,6 +26,8 @@ const AppContext = React.createContext<{
   setStatusBarVisibility: () => {},
   activeImage: { raw: '' },
   setActiveImage: () => {},
+  savedImages: new Set(),
+  setSavedImages: () => {},
 });
 
 export default AppContext;

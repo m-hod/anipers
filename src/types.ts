@@ -28,6 +28,8 @@ export type RootStackParamList = {
   tags: { tag: string };
   wallpaper: { imageId: number; imageUrl: string };
   results: { query: string };
+  collections: undefined;
+  collection: { fileName: string };
 };
 
 export type ActiveImage = {

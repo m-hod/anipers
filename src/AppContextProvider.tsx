@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import AppContext from './AppContext';
 import { BooruResponsePost, ActiveImage } from './types';
 import RNFS from 'react-native-fs';
+import ImmersiveMode from 'react-native-immersive-mode';
+
+const appPath = RNFS.DocumentDirectoryPath;
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [appLoading, setAppLoading] = useState(true);
@@ -13,9 +16,15 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeImage, setActiveImage] = useState<ActiveImage>({
     raw: '',
   });
-  const [savedImages, setSavedImages] = useState([]);
-  const appPath = RNFS.DocumentDirectoryPath;
-  console.log('state', savedImages);
+  const [savedImages, setSavedImages] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    ImmersiveMode.fullLayout(true);
+    ImmersiveMode.setBarTranslucent(true);
+    return () => {
+      ImmersiveMode.fullLayout(false);
+    };
+  }, []);
 
   useEffect(() => {
     RNFS.mkdir(`${appPath}/wallpapers`).then(() => {
@@ -24,7 +33,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
           RNFS.readFile(`${appPath}/wallpapers/references`)
             .then((response) => {
               console.log(response);
-              setSavedImages(JSON.parse(response));
+              setSavedImages(new Set(JSON.parse(response)));
             })
             .catch((e) => {
               console.log(e);
@@ -66,6 +75,8 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         setStatusBarVisibility,
         activeImage,
         setActiveImage,
+        savedImages,
+        setSavedImages,
       }}>
       {children}
     </AppContext.Provider>

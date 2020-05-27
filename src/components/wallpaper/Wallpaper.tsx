@@ -13,14 +13,10 @@ import FastImage from 'react-native-fast-image';
 import BottomNav from './BottomNav';
 import IconButton from 'src/ui/components/IconButton';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import ImmersiveMode from 'react-native-immersive-mode';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
 type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
-
-//fix up homepage images
-//include onendreach etc
-
-// image resolution destroyed by crop - save crop params and adjust raw image by them instead of cropped compressed image?
 
 function Wallpaper() {
   const { imageUrl, imageId } = useRoute<RouteProps>().params;
@@ -42,16 +38,12 @@ function Wallpaper() {
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   useEffect(() => {
-    if (imageUrl !== activeImage.raw) {
-      setActiveImage({ raw: imageUrl });
-    }
-  }, []);
-
-  useEffect(() => {
     if (fullscreen) {
-      setStatusBarVisibility(false);
+      ImmersiveMode.setBarMode('FullSticky');
+      // setStatusBarVisibility(false);
     } else {
-      setStatusBarVisibility(true);
+      ImmersiveMode.setBarMode('Normal');
+      // setStatusBarVisibility(true);
     }
   }, [fullscreen]);
 

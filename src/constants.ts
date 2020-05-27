@@ -23,6 +23,8 @@ export const Colors: { [key: string]: string } = {
   iconColor: 'rgba(255, 255, 255, 0.5)',
   iconColorActive: '#FFFFFF',
   iconColorInactive: 'rgba(255, 255, 255, 0.5)',
+  iconColorSaved: 'rgba(152, 240, 152, 0.75)',
+  iconColorSavedActive: 'rgba(152, 240, 152, 1)',
   titleColor: '#FFFFFF',
   background: 'rgb(32, 32, 32)',
   modalPopover: 'rgba(0, 0, 0, 0.05)',
@@ -60,8 +62,8 @@ export const Layout: { [key: string]: ViewStyle } = {
     bottom: 0,
   },
   pageContainer: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
+    height: Dimensions.get('screen').height,
+    width: Dimensions.get('screen').width,
   },
 };
 

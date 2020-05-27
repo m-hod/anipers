@@ -40,7 +40,13 @@ function Tags() {
   const { tag } = useRoute<RouteProps>().params;
   const [isRandom, setIsRandom] = useState(0);
   const [page, setPage] = useState(0);
-  const { images, setImages } = useContext(AppContext);
+  const {
+    images,
+    setImages,
+    savedImages,
+    activeImage,
+    setActiveImage,
+  } = useContext(AppContext);
   const promise = useCallback(() => getTagPosts(tag, page, !!isRandom), [
     tag,
     page,
@@ -83,6 +89,9 @@ function Tags() {
               return (
                 <TouchableOpacity
                   onPress={() => {
+                    if (el.item.file_url !== activeImage.raw) {
+                      setActiveImage({ raw: el.item.file_url });
+                    }
                     navigation.navigate('wallpaper', {
                       imageId: el.item.id,
                       imageUrl: el.item.file_url,
@@ -93,8 +102,13 @@ function Tags() {
                       uri: el.item.file_url,
                       priority: FastImage.priority.high,
                     }}
-                    style={[styles.image]}
-                  />
+                    style={[styles.image]}>
+                    <View>
+                      {savedImages.has(el.item.file_url) && (
+                        <Icon size={28} name="save" style={styles.saveIcon} />
+                      )}
+                    </View>
+                  </FastImage>
                 </TouchableOpacity>
               );
             }}
@@ -188,6 +202,8 @@ const styles = StyleSheet.create({
     height: WindowHeight / 3.25,
     width: WindowWidth / 3.25,
     margin: 2,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
   bottomNav: {
     position: 'absolute',
@@ -206,5 +222,9 @@ const styles = StyleSheet.create({
   },
   bottomNavIconActive: {
     color: Colors.iconColorActive,
+  },
+  saveIcon: {
+    color: Colors.iconColorSaved,
+    margin: 5,
   },
 });

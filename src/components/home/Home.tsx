@@ -31,6 +31,7 @@ import AppContext from 'src/AppContext';
 import TagTab from 'src/ui/components/TagTab';
 import IconButton from 'src/ui/components/IconButton';
 import FastImage from 'react-native-fast-image';
+import ImmersiveMode from 'react-native-immersive-mode';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -67,6 +68,10 @@ function TagsGroup({ category }: { category: TagCategories }) {
   const [initialLoad, setInitialLoad] = useState(true);
 
   const { setPromises } = useContext(AppContext);
+
+  useEffect(() => {
+    ImmersiveMode.setBarMode('FullSticky');
+  }, []);
 
   useEffect(() => {
     if (count < 1) {
@@ -234,6 +239,7 @@ const styles = StyleSheet.create({
   },
   image: {
     ...Layout.containerOverlay,
+    // height: Dimensions.get('window').height + 50,
     zIndex: -999,
   },
   imageHidden: {

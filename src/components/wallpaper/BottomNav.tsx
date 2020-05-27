@@ -16,7 +16,13 @@ import RNFS from 'react-native-fs';
 import { parseFileUrl } from 'src/utils';
 
 function BottomNav({ uri }: { uri: string }) {
-  const { activeImage, setActiveImage, setImages } = useContext(AppContext);
+  const {
+    activeImage,
+    setActiveImage,
+    setImages,
+    savedImages,
+    setSavedImages,
+  } = useContext(AppContext);
 
   useEffect(() => {
     console.log('active image changed');
@@ -29,8 +35,6 @@ function BottomNav({ uri }: { uri: string }) {
           icon="get-app"
           label="Download"
           action={() => {
-            console.log(parseFileUrl(activeImage.raw));
-            // check perms? have a listener to check perms?
             RNFS.downloadFile({
               fromUrl: activeImage.raw,
               toFile: `${downloadsDirectoryPath}/${parseFileUrl(
@@ -44,16 +48,20 @@ function BottomNav({ uri }: { uri: string }) {
           icon="save"
           label="Save to Gallery"
           action={() => {
-            console.log('save!');
+            if (savedImages.has(uri)) return;
             RNFS.readFile(referencesFilePath)
               .then((response) => {
                 const fileContents = JSON.parse(response);
-                fileContents.push(activeImage.raw);
-                RNFS.writeFile(referencesFilePath, JSON.stringify(fileContents))
+                const filteredFileContents = new Set(fileContents);
+                filteredFileContents.add(activeImage.raw);
+                RNFS.writeFile(
+                  referencesFilePath,
+                  JSON.stringify([...filteredFileContents]),
+                )
                   .then((response) => {
-                    console.log(response);
                     RNFS.readFile(referencesFilePath).then((response) => {
-                      console.log(JSON.parse(response));
+                      const updatedFileContents = JSON.parse(response);
+                      setSavedImages(new Set([...updatedFileContents]));
                     });
                   })
                   .catch((e) => {
@@ -63,6 +71,7 @@ function BottomNav({ uri }: { uri: string }) {
               .catch((e) => console.log(e));
           }}
           primary
+          variant={savedImages.has(uri) ? 'saved' : undefined}
         />
         <IconButton
           icon="crop"
@@ -127,12 +136,14 @@ const styles = StyleSheet.create({
   container: {
     height: menuBarHeight,
     width: Dimensions.get('window').width,
-    backgroundColor: Colors.menuColor,
+    backgroundColor: 'rgba(0,0,0,0.4)',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     position: 'absolute',
     bottom: 0,
     zIndex: 2,
+    marginBottom:
+      Dimensions.get('screen').height - Dimensions.get('window').height,
   },
 });
