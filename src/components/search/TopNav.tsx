@@ -56,7 +56,7 @@ function TopNav({ folderActive }: { folderActive?: boolean }) {
       )}
       <IconButton
         label="Search for Tags"
-        icon="search"
+        icon={!searchIsVisible ? 'search' : 'clear'}
         primary={searchIsVisible}
         action={() => {
           setSearchVisible(!searchIsVisible);
@@ -88,15 +88,17 @@ const styles = StyleSheet.create({
     color: Colors.iconColorActive,
   },
   searchBar: {
-    height: 30,
-    marginHorizontal: 15,
-    padding: 5,
-    paddingHorizontal: 10,
+    height: 25,
+    marginHorizontal: 25,
+    padding: 2.5,
+    // paddingHorizontal: 10,
     fontSize: 16,
     color: '#FFFFFF',
     flexGrow: 1,
-    backgroundColor: Colors.menuColorDark,
-    borderRadius: 5,
+    // backgroundColor: Colors.menuColorDark,
+    borderBottomColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    // borderRadius: 5,
     zIndex: 3,
   },
 });

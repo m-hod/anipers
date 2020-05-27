@@ -70,7 +70,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
   const { setPromises } = useContext(AppContext);
 
   useEffect(() => {
-    ImmersiveMode.setBarMode('FullSticky');
+    ImmersiveMode.setBarMode('Normal');
   }, []);
 
   useEffect(() => {
