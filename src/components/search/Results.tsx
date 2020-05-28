@@ -25,6 +25,9 @@ import {
 import FastImage from 'react-native-fast-image';
 import TopNav from './TopNav';
 import IconButton from 'src/ui/components/IconButton';
+import TagsPage from 'src/ui/pages/TagsPage';
+import ProgressiveImage from 'src/ui/components/ProgressiveImage';
+import { ImageType } from 'src/types';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 type RouteProps = RouteProp<RootStackParamList, 'results'>;
@@ -32,7 +35,7 @@ type RouteProps = RouteProp<RootStackParamList, 'results'>;
 function Results() {
   const navigation = useNavigation<NavigationProps>();
   const { query } = useRoute<RouteProps>().params;
-  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
+  const [heroImageUrl, setHeroImageUrl] = useState<ImageType | null>(null);
 
   const promise = useCallback(() => searchTags(reverseParseTagName(query)), [
     query,
@@ -42,9 +45,14 @@ function Results() {
   useEffect(() => {
     if (promiseState.status === 'loaded' && promiseState.data) {
       const tagQueryString = promiseState.data[0].name;
-      getRandomPostByTag(tagQueryString).then((res) =>
-        setHeroImageUrl(res[0].file_url),
-      );
+      getRandomPostByTag(tagQueryString).then((res) => {
+        console.log(res[0]);
+        setHeroImageUrl({
+          file_ext: res[0].file_ext,
+          file_url: res[0].file_url,
+          preview_file_url: res[0].preview_file_url,
+        });
+      });
     }
   }, [promiseState]);
 
@@ -79,14 +87,15 @@ function Results() {
   };
 
   return (
-    <View style={styles.pageContainer}>
+    <TagsPage
+      title={query ? query : 'All'}
+      altTitle="Showing closest matches for:">
       <TopNav />
-      <Text style={styles.altTitleFont}>Showing closest matches for:</Text>
-      <Text style={styles.subTitle}>{query ? query : 'All'}</Text>
+      {/* Put in an annotation (tooltip?) - post result tallies are calculated before filtering images unsuitable for wallpapers */}
       <View style={styles.tagContainer}>{renderTagTabs()}</View>
-      {heroImageUrl && (
-        <FastImage source={{ uri: heroImageUrl }} style={styles.image} />
-      )}
+      <View style={styles.image}>
+        {heroImageUrl && <ProgressiveImage image={heroImageUrl} type="full" />}
+      </View>
       <View style={styles.bottomNav}>
         <IconButton
           icon="image"
@@ -99,28 +108,13 @@ function Results() {
           disabled={!heroImageUrl}
         />
       </View>
-      <View style={styles.overlay} />
-    </View>
+    </TagsPage>
   );
 }
 
 export default Results;
 
 const styles = StyleSheet.create({
-  pageContainer: {
-    ...Layout.pageContainer,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingVertical: statusBarHeight + menuBarHeight + 25,
-    position: 'relative',
-    zIndex: 1,
-  },
-  altTitleFont: {
-    ...Fonts.altTitleFont,
-  },
-  subTitle: {
-    ...Fonts.subTitleFont,
-  },
   tagContainer: {
     marginTop: 20,
     height: Dimensions.get('window').height / 1.6,
@@ -130,11 +124,6 @@ const styles = StyleSheet.create({
     ...Layout.containerOverlay,
     zIndex: -999,
   },
-  overlay: {
-    ...Layout.containerOverlay,
-    zIndex: -998,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-  },
   bottomNav: {
     position: 'absolute',
     top: WindowHeight - 36 - 20,
@@ -143,3 +132,8 @@ const styles = StyleSheet.create({
     left: WindowWidth - 20 - 36,
   },
 });
+
+// user should never see a gray background
+// load until preview loaded
+// display blurred preview until full image loaded
+// if search again and already a background image, display that until next search complete - don't show tags until loaded again

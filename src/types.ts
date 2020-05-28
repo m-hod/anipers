@@ -2,6 +2,8 @@ export type BooruResponsePost = {
   id: number;
   file_ext: string;
   file_url: string;
+  tag_string: string;
+  preview_file_url: string;
 };
 
 export type BooruAPIResponseTag = {
@@ -35,4 +37,14 @@ export type RootStackParamList = {
 export type ActiveImage = {
   raw: string;
   edited?: string;
+};
+
+export type ImageType = {
+  file_ext: string;
+  /** Low-res file url for thumbnails */
+  preview_file_url: string;
+  /** External file url */
+  file_url: string;
+  /** Internal Url to cached reference */
+  cropped_file_url?: string;
 };

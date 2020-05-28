@@ -1,3 +1,6 @@
+import { BooruResponsePost } from './types';
+import { filteredTags, supportedFormats } from './constants';
+
 /**
  * Remove content in brackets
  * Replace underscores with spaces
@@ -79,4 +82,48 @@ export const truncateNumber = (num: number) => {
 export const parseFileUrl = (fileUrl: string) => {
   const urlArray = fileUrl.split('/');
   return urlArray[urlArray.length - 1];
+};
+
+/**
+ * Checks if file_ext is supported, if it isn't, deletes item from set
+ * Maps through tags for each response post, removing items
+ * @param response
+ */
+export const filterAPIResponses = (responses: BooruResponsePost[]) => {
+  const filteredTagsArray = [...filteredTags];
+  const responsesSet = new Set(responses);
+  responses.forEach((response) => {
+    if (!supportedFormats.has(response.file_ext)) {
+      responsesSet.delete(response);
+      return;
+    }
+    const tags = new Set(response.tag_string.split(' '));
+    for (let i = 0; i < filteredTagsArray.length; i++) {
+      if (tags.has(filteredTagsArray[i])) {
+        responsesSet.delete(response);
+        return;
+      }
+    }
+  });
+  return [...responsesSet];
+};
+
+/**
+ * Checks if file_ext is supported, if it isn't, returns true
+ * Maps through the tags in a single response and returns a boolean value
+ * True if a filtered tag exists, false if none
+ * @param response
+ */
+export const checkSingleResponse = (response: BooruResponsePost) => {
+  if (!supportedFormats.has(response.file_ext)) {
+    return true;
+  }
+  const tags = new Set(response.tag_string.split(' '));
+  const filteredTagsArray = [...filteredTags];
+  for (let j = 0; j < filteredTagsArray.length; j++) {
+    if (tags.has(filteredTagsArray[j])) {
+      return true;
+    }
+  }
+  return false;
 };

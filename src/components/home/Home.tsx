@@ -20,6 +20,7 @@ import {
   Layout,
   WindowHeight,
   WindowWidth,
+  homeTagsCategories,
 } from 'src/constants';
 import { usePromise } from 'src/hooks/usePromise';
 import { getMostPopularTags, getRandomPostByTag } from 'src/API';
@@ -32,15 +33,9 @@ import TagTab from 'src/ui/components/TagTab';
 import IconButton from 'src/ui/components/IconButton';
 import FastImage from 'react-native-fast-image';
 import ImmersiveMode from 'react-native-immersive-mode';
+import TagsPage from 'src/ui/pages/TagsPage';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
-
-const homeTagsCategories = new Map<TagCategories, string>([
-  ['character', 'Characters'],
-  ['copyright', 'Franchise'],
-  ['general', 'Tags'],
-  ['artist', 'Artists'],
-]);
 
 export default function Home() {
   return (
@@ -145,9 +140,9 @@ function TagsGroup({ category }: { category: TagCategories }) {
   };
 
   return (
-    <View style={styles.pageContainer}>
-      <Text style={styles.subTitle}>Most Popular:</Text>
-      <Text style={styles.title}>{homeTagsCategories.get(category)}</Text>
+    <TagsPage
+      subTitle="Most Popular:"
+      title={homeTagsCategories.get(category)!}>
       <View style={styles.tagContainer}>{renderTags()}</View>
       {!!heroImageUrl[0] &&
         heroImageUrl.map((imageUrl) => (
@@ -175,8 +170,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
         imageLoading={imageLoading}
         setImageLoading={setImageLoading}
       />
-      <View style={styles.overlay} />
-    </View>
+    </TagsPage>
   );
 }
 
@@ -216,20 +210,6 @@ function HomeBottomNav({
 }
 
 const styles = StyleSheet.create({
-  pageContainer: {
-    ...Layout.pageContainer,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingVertical: statusBarHeight + menuBarHeight + 25,
-    position: 'relative',
-    zIndex: 1,
-  },
-  title: {
-    ...Fonts.titleFont,
-  },
-  subTitle: {
-    ...Fonts.subTitleFont,
-  },
   tagContainer: {
     marginVertical: 20,
     height: Dimensions.get('window').height / 2,
@@ -239,16 +219,10 @@ const styles = StyleSheet.create({
   },
   image: {
     ...Layout.containerOverlay,
-    // height: Dimensions.get('window').height + 50,
     zIndex: -999,
   },
   imageHidden: {
     display: 'none',
-  },
-  overlay: {
-    ...Layout.containerOverlay,
-    zIndex: -998,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
   bottomNav: {
     position: 'absolute',
