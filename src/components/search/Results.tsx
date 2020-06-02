@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { RootStackParamList } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
@@ -28,6 +28,7 @@ import IconButton from 'src/ui/components/IconButton';
 import TagsPage from 'src/ui/pages/TagsPage';
 import ProgressiveImage from 'src/ui/components/ProgressiveImage';
 import { ImageType } from 'src/types';
+import AppContext from 'src/AppContext';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 type RouteProps = RouteProp<RootStackParamList, 'results'>;
@@ -35,7 +36,12 @@ type RouteProps = RouteProp<RootStackParamList, 'results'>;
 function Results() {
   const navigation = useNavigation<NavigationProps>();
   const { query } = useRoute<RouteProps>().params;
-  const [heroImageUrl, setHeroImageUrl] = useState<ImageType | null>(null);
+  const [heroImage, setHeroImage] = useState<ImageType | null>(null);
+  const {
+    setSearchResultImages,
+    currentSearchTag,
+    setCurrentSearchTag,
+  } = useContext(AppContext);
 
   const promise = useCallback(() => searchTags(reverseParseTagName(query)), [
     query,
@@ -47,7 +53,7 @@ function Results() {
       const tagQueryString = promiseState.data[0].name;
       getRandomPostByTag(tagQueryString).then((res) => {
         console.log(res[0]);
-        setHeroImageUrl({
+        setHeroImage({
           file_ext: res[0].file_ext,
           file_url: res[0].file_url,
           preview_file_url: res[0].preview_file_url,
@@ -75,7 +81,11 @@ function Results() {
                 key={el.item.id}
                 tag={el.item}
                 navigate={() => {
-                  navigation.navigate('tags', { tag: el.item.name });
+                  if (currentSearchTag !== el.item.name) {
+                    setSearchResultImages(new Map());
+                    setCurrentSearchTag(el.item.name);
+                  }
+                  navigation.navigate('thumbnails', { tag: el.item.name });
                 }}
               />
             );
@@ -94,7 +104,7 @@ function Results() {
       {/* Put in an annotation (tooltip?) - post result tallies are calculated before filtering images unsuitable for wallpapers */}
       <View style={styles.tagContainer}>{renderTagTabs()}</View>
       <View style={styles.image}>
-        {heroImageUrl && <ProgressiveImage image={heroImageUrl} type="full" />}
+        {heroImage && <ProgressiveImage image={heroImage} />}
       </View>
       <View style={styles.bottomNav}>
         <IconButton
@@ -102,10 +112,15 @@ function Results() {
           label="Navigate to Image"
           size={36}
           action={() => {
-            navigation.navigate('wallpaper', { imageUrl: heroImageUrl! });
+            if (heroImage) {
+              navigation.navigate('wallpaper', {
+                image: heroImage,
+                type: 'home',
+              });
+            }
           }}
           primary
-          disabled={!heroImageUrl}
+          disabled={!heroImage}
         />
       </View>
     </TagsPage>

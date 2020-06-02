@@ -5,23 +5,14 @@ import { BlurView } from '@react-native-community/blur';
 import { StyleSheet, View } from 'react-native';
 import { Layout, WindowHeight, WindowWidth } from 'src/constants';
 
-function ProgressiveImage({
-  image,
-  type,
-}: {
-  image: ImageType;
-  type: 'thumb' | 'full';
-}) {
+function ProgressiveImage({ image }: { image: ImageType }) {
   const [qualDisplayed, setQualDisplayed] = useState(false);
-  const [blur, setBlur] = useState(false);
+  const [blur, setBlur] = useState(true);
   return (
     <View style={Layout.pageContainer}>
       <FastImage
         source={{ uri: image.preview_file_url }}
         style={[qualDisplayed ? styles.hidden : styles.displayed]}
-        onLoad={() => {
-          setBlur(true);
-        }}
       />
       {blur && (
         <BlurView

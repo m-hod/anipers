@@ -27,8 +27,8 @@ export type MappedTagCategories = {
 /* React Navigation Types */
 export type RootStackParamList = {
   home: undefined;
-  tags: { tag: string };
-  wallpaper: { imageId: number; imageUrl: string };
+  thumbnails: { tag: string };
+  wallpaper: { image: ImageType; type: 'search' | 'saved' | 'home' };
   results: { query: string };
   collections: undefined;
   collection: { fileName: string };

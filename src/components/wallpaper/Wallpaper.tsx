@@ -1,6 +1,11 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { StyleSheet, Image, View, Dimensions } from 'react-native';
-import { Layout, menuBarHeight, WindowHeight } from 'src/constants';
+import {
+  Layout,
+  menuBarHeight,
+  WindowHeight,
+  WindowWidth,
+} from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, BooruResponsePost, ActiveImage } from 'src/types';
 import { RouteProp, useRoute } from '@react-navigation/native';
@@ -14,25 +19,36 @@ import BottomNav from './BottomNav';
 import IconButton from 'src/ui/components/IconButton';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import ImmersiveMode from 'react-native-immersive-mode';
+import ProgressiveImage from 'src/ui/components/ProgressiveImage';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
 type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
 
 function Wallpaper() {
-  const { imageUrl, imageId } = useRoute<RouteProps>().params;
+  const { image, type } = useRoute<RouteProps>().params;
   const [fullscreen, setFullscreen] = useState(false);
   const {
-    images,
-    setImages,
-    statusBarVisibility,
-    setStatusBarVisibility,
+    searchResultImages,
+    setSearchResultImages,
     activeImage,
     setActiveImage,
+    savedImages,
   } = useContext(AppContext);
 
   const onViewRef = useRef((info: any) => {
-    if (activeImage.raw !== info.viewableItems[0].item.file_url) {
-      setActiveImage({ raw: info.viewableItems[0].item.file_url });
+    if (activeImage?.file_url !== info.viewableItems[0].item.file_url) {
+      const {
+        file_url,
+        file_ext,
+        preview_file_url,
+        cropped_file_url,
+      } = info.viewableItems[0].item;
+      setActiveImage({
+        file_url,
+        file_ext,
+        preview_file_url,
+        cropped_file_url: cropped_file_url ? cropped_file_url : undefined,
+      });
     }
   });
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
@@ -40,48 +56,58 @@ function Wallpaper() {
   useEffect(() => {
     if (fullscreen) {
       ImmersiveMode.setBarMode('FullSticky');
-      // setStatusBarVisibility(false);
     } else {
       ImmersiveMode.setBarMode('Normal');
-      // setStatusBarVisibility(true);
     }
   }, [fullscreen]);
 
   return (
     <View style={styles.pageContainer}>
-      {images.size && (
+      {searchResultImages.size ? (
         <FlatList
-          data={[...images.values()]}
+          data={
+            type === 'home'
+              ? [image]
+              : type === 'search'
+              ? [...searchResultImages.values()]
+              : [...savedImages.values()]
+          }
           renderItem={(el) => (
             <TouchableWithoutFeedback
               onPress={() => {
                 setFullscreen(!fullscreen);
               }}>
-              <FastImage
-                source={{
-                  uri: activeImage.edited
-                    ? activeImage.edited
-                    : el.item.file_url,
-                }}
-                style={[styles.image]}
-              />
+              <ProgressiveImage image={el.item} />
             </TouchableWithoutFeedback>
           )}
           initialScrollIndex={
-            [...images.values()].findIndex((post) => post.id === imageId)!
+            type === 'home'
+              ? 0
+              : type === 'search'
+              ? [...searchResultImages.values()].findIndex(
+                  (post) => post.file_url === image.file_url,
+                )!
+              : [...savedImages.values()].findIndex(
+                  (post) => post.file_url === image.file_url,
+                )!
           }
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.file_url.toString()}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator
-          viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+          viewabilityConfig={viewConfigRef.current}
           onViewableItemsChanged={onViewRef.current}
           // onEndReached={() => {
           //   setPage(page + 1);
           // }}
+          getItemLayout={(data, index) => ({
+            offset: WindowWidth * index,
+            length: WindowWidth,
+            index,
+          })}
         />
-      )}
-      {!fullscreen && <BottomNav uri={imageUrl} />}
+      ) : null}
+      {!fullscreen && <BottomNav image={image} />}
     </View>
   );
 }
@@ -92,8 +118,5 @@ const styles = StyleSheet.create({
   pageContainer: {
     ...Layout.pageContainer,
     position: 'relative',
-  },
-  image: {
-    ...Layout.pageContainer,
   },
 });

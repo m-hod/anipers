@@ -24,7 +24,7 @@ import {
 } from 'src/constants';
 import { usePromise } from 'src/hooks/usePromise';
 import { getMostPopularTags, getRandomPostByTag } from 'src/API';
-import { TagCategories, RootStackParamList } from 'src/types';
+import { TagCategories, RootStackParamList, ImageType } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import Loading from 'src/ui/animations/Loading';
@@ -38,6 +38,7 @@ import TagsPage from 'src/ui/pages/TagsPage';
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
 export default function Home() {
+  const { appLoading } = useContext(AppContext);
   return (
     <View>
       <TopNav />
@@ -59,10 +60,16 @@ function TagsGroup({ category }: { category: TagCategories }) {
   );
   const promiseState = usePromise(promise);
   const [heroImageUrl, setHeroImageUrl] = useState(['']);
+  const [currentImage, setCurrentImage] = useState<ImageType | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const { setPromises } = useContext(AppContext);
+  const {
+    setPromises,
+    setSearchResultImages,
+    currentSearchTag,
+    setCurrentSearchTag,
+  } = useContext(AppContext);
 
   useEffect(() => {
     ImmersiveMode.setBarMode('Normal');
@@ -90,7 +97,13 @@ function TagsGroup({ category }: { category: TagCategories }) {
         }
       })();
 
-      getRandomPostByTag(tagQueryString).then((res) =>
+      getRandomPostByTag(tagQueryString).then((res) => {
+        const [responsePost] = res;
+        setCurrentImage({
+          file_ext: responsePost.file_ext,
+          preview_file_url: responsePost.preview_file_url,
+          file_url: responsePost.file_url,
+        });
         setHeroImageUrl((prevState) => {
           if (prevState[0]) {
             const newState = [...prevState];
@@ -99,8 +112,8 @@ function TagsGroup({ category }: { category: TagCategories }) {
           } else {
             return [res[0].file_url];
           }
-        }),
-      );
+        });
+      });
     }
   }, [promiseState, count]);
 
@@ -118,16 +131,16 @@ function TagsGroup({ category }: { category: TagCategories }) {
         <FlatList
           data={promiseState.data}
           renderItem={(el) => {
-            // currently filtering twice, would be better to filter this out in the call itself so it never reaches this point
-            if (filteredTags.has(el.item.name)) {
-              return null;
-            }
             return (
               <TagTab
                 key={el.item.id}
                 tag={el.item}
                 navigate={() => {
-                  navigation.navigate('tags', { tag: el.item.name });
+                  if (currentSearchTag !== el.item.name) {
+                    setSearchResultImages(new Map());
+                    setCurrentSearchTag(el.item.name);
+                  }
+                  navigation.navigate('thumbnails', { tag: el.item.name });
                 }}
                 isHome
               />
@@ -158,6 +171,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
             onLoad={() => {
               setImageLoading(false);
               if (heroImageUrl.length) {
+                console.log(heroImageUrl);
                 setHeroImageUrl([heroImageUrl[heroImageUrl.length - 1]]);
               }
               setInitialLoad(false);
@@ -165,7 +179,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
           />
         ))}
       <HomeBottomNav
-        imageUrl={heroImageUrl[0]}
+        image={currentImage}
         setCount={setCount}
         imageLoading={imageLoading}
         setImageLoading={setImageLoading}
@@ -175,17 +189,18 @@ function TagsGroup({ category }: { category: TagCategories }) {
 }
 
 function HomeBottomNav({
-  imageUrl,
+  image,
   setCount,
   imageLoading,
   setImageLoading,
 }: {
-  imageUrl: string;
+  image: ImageType | null;
   setCount: Function;
   imageLoading: boolean;
   setImageLoading: (arg: boolean) => void;
 }) {
   const navigation = useNavigation<NavigationProps>();
+  const { setActiveImage } = useContext(AppContext);
 
   return (
     <View style={styles.bottomNav}>
@@ -194,7 +209,10 @@ function HomeBottomNav({
         label="Navigate to Image"
         size={36}
         action={() => {
-          navigation.navigate('wallpaper', { imageUrl });
+          if (image) {
+            setActiveImage(image);
+            navigation.navigate('wallpaper', { image, type: 'home' });
+          }
         }}
         primary
       />
@@ -234,5 +252,11 @@ const styles = StyleSheet.create({
   bottomNavIcon: {
     color: Colors.iconColorActive,
     marginVertical: 5,
+  },
+  pageOverlay: {
+    ...Layout.pageContainer,
+    position: 'relative',
+    zIndex: 2,
+    backgroundColor: Colors.modalPopover,
   },
 });

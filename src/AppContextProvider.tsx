@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import AppContext from './AppContext';
-import { BooruResponsePost, ActiveImage } from './types';
+import { BooruResponsePost, ActiveImage, ImageType } from './types';
 import RNFS from 'react-native-fs';
 import ImmersiveMode from 'react-native-immersive-mode';
 
 const appPath = RNFS.DocumentDirectoryPath;
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [appLoading, setAppLoading] = useState(true);
   const [promises, setPromises] = useState<Map<string, boolean>>(new Map());
-  const [images, setImages] = useState<Map<string, BooruResponsePost>>(
+  const [appLoading, setAppLoading] = useState(true);
+  const [statusBarVisibility, setStatusBarVisibility] = useState(false);
+
+  const [searchResultImages, setSearchResultImages] = useState<
+    Map<string, ImageType>
+  >(new Map());
+  const [activeImage, setActiveImage] = useState<ImageType | null>(null);
+  const [savedImages, setSavedImages] = useState<Map<string, ImageType>>(
     new Map(),
   );
-  const [statusBarVisibility, setStatusBarVisibility] = useState(false);
-  const [activeImage, setActiveImage] = useState<ActiveImage>({
-    raw: '',
-  });
-  const [savedImages, setSavedImages] = useState<Set<string>>(new Set());
+  const [currentSearchTag, setCurrentSearchTag] = useState('');
 
   useEffect(() => {
     ImmersiveMode.fullLayout(true);
@@ -32,8 +34,13 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         if (response) {
           RNFS.readFile(`${appPath}/wallpapers/references`)
             .then((response) => {
-              console.log(response);
-              setSavedImages(new Set(JSON.parse(response)));
+              setSavedImages(() => {
+                const newState = new Map();
+                JSON.parse(response).forEach((imageItem: ImageType) => {
+                  newState.set(imageItem.file_url, imageItem);
+                });
+                return newState;
+              });
             })
             .catch((e) => {
               console.log(e);
@@ -49,6 +56,10 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
   }, []);
+
+  useEffect(() => {
+    console.log(savedImages);
+  }, [savedImages]);
 
   useEffect(() => {
     if (appLoading) {
@@ -69,14 +80,16 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         setAppLoading,
         promises,
         setPromises,
-        images,
-        setImages,
+        searchResultImages,
+        setSearchResultImages,
         statusBarVisibility,
         setStatusBarVisibility,
         activeImage,
         setActiveImage,
         savedImages,
         setSavedImages,
+        currentSearchTag,
+        setCurrentSearchTag,
       }}>
       {children}
     </AppContext.Provider>

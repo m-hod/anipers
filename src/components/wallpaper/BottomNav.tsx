@@ -11,22 +11,18 @@ import {
 } from 'src/constants';
 import ImagePicker from 'react-native-image-crop-picker';
 import AppContext from 'src/AppContext';
-import { BooruResponsePost, ActiveImage } from 'src/types';
+import { BooruResponsePost, ActiveImage, ImageType } from 'src/types';
 import RNFS from 'react-native-fs';
 import { parseFileUrl } from 'src/utils';
 
-function BottomNav({ uri }: { uri: string }) {
+function BottomNav({ image }: { image: ImageType }) {
   const {
     activeImage,
     setActiveImage,
-    setImages,
+    setSearchResultImages,
     savedImages,
     setSavedImages,
   } = useContext(AppContext);
-
-  useEffect(() => {
-    console.log('active image changed');
-  }, [activeImage]);
 
   return (
     <>
@@ -36,9 +32,9 @@ function BottomNav({ uri }: { uri: string }) {
           label="Download"
           action={() => {
             RNFS.downloadFile({
-              fromUrl: activeImage.raw,
+              fromUrl: activeImage?.file_url!,
               toFile: `${downloadsDirectoryPath}/${parseFileUrl(
-                activeImage.raw,
+                activeImage?.file_url!,
               )}`,
             });
           }}
@@ -48,20 +44,22 @@ function BottomNav({ uri }: { uri: string }) {
           icon="save"
           label="Save to Gallery"
           action={() => {
-            if (savedImages.has(uri)) return;
+            if (savedImages.has(image.file_url)) return;
             RNFS.readFile(referencesFilePath)
               .then((response) => {
                 const fileContents = JSON.parse(response);
-                const filteredFileContents = new Set(fileContents);
-                filteredFileContents.add(activeImage.raw);
+                const filteredFileContents = new Map(
+                  fileContents ? fileContents : [],
+                );
+                filteredFileContents.set(activeImage?.file_url!, activeImage);
                 RNFS.writeFile(
                   referencesFilePath,
                   JSON.stringify([...filteredFileContents]),
                 )
                   .then((response) => {
-                    RNFS.readFile(referencesFilePath).then((response) => {
-                      const updatedFileContents = JSON.parse(response);
-                      setSavedImages(new Set([...updatedFileContents]));
+                    RNFS.readFile(referencesFilePath).then((_response) => {
+                      const updatedFileContents = JSON.parse(_response);
+                      setSavedImages(new Map(updatedFileContents));
                     });
                   })
                   .catch((e) => {
@@ -71,14 +69,14 @@ function BottomNav({ uri }: { uri: string }) {
               .catch((e) => console.log(e));
           }}
           primary
-          variant={savedImages.has(uri) ? 'saved' : undefined}
+          variant={savedImages.has(image.file_url) ? 'saved' : undefined}
         />
         <IconButton
           icon="crop"
           label="Edit Crop"
           action={async () => {
             await ImagePicker.openCropper({
-              path: activeImage.raw,
+              path: activeImage?.file_url!,
               width: WindowWidth,
               height: WindowHeight,
               cropperToolbarTitle: 'Edit Image',
@@ -90,26 +88,20 @@ function BottomNav({ uri }: { uri: string }) {
               hideBottomControls: true,
               compressImageQuality: 1,
             })
-              .then((image: any) => {
-                console.log(image);
-                setActiveImage((prevState: ActiveImage) => {
+              .then((_image: any) => {
+                setActiveImage((prevState: ImageType) => {
                   const newState = { ...prevState };
-                  newState.edited = image.path;
+                  console.log(newState);
+                  newState.cropped_file_url = _image.path;
                   return newState;
                 });
-                setImages((prevState: Map<string, BooruResponsePost>) => {
+                setSearchResultImages((prevState: Map<string, ImageType>) => {
                   const newState = new Map(prevState);
                   console.log(newState);
-                  console.log(
-                    newState.set(
-                      uri,
-                      //@ts-ignore
-                      {
-                        ...newState.get(uri),
-                        file_url: image.path,
-                      },
-                    ),
-                  );
+                  newState.set(image.file_url, {
+                    ...newState.get(image.file_url)!,
+                    cropped_file_url: _image.path,
+                  });
                   return newState;
                 });
               })

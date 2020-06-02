@@ -9,7 +9,7 @@ import AppContextProvider from './AppContextProvider';
 
 /* Screens */
 import Home from './components/home/Home';
-import Tags from './components/tags/Tags';
+import Thumbnails from './components/thumbnails/Thumbnails';
 import Wallpaper from './components/wallpaper/Wallpaper';
 import Results from './components/search/Results';
 import Collections from './components/collections/Collections';
@@ -26,7 +26,7 @@ const App = () => {
             initialRouteName="home"
             screenOptions={{ headerShown: false }}>
             <Stack.Screen name="home" component={Home} />
-            <Stack.Screen name="tags" component={Tags} />
+            <Stack.Screen name="thumbnails" component={Thumbnails} />
             <Stack.Screen name="wallpaper" component={Wallpaper} />
             <Stack.Screen name="results" component={Results} />
             <Stack.Screen name="collections" component={Collections} />

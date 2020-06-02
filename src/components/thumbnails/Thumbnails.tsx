@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { RootStackParamList, BooruResponsePost } from 'src/types';
+import { RootStackParamList, BooruResponsePost, ImageType } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import {
@@ -32,17 +32,17 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
 import IconButton from 'src/ui/components/IconButton';
 
-type NavigationProps = StackNavigationProp<RootStackParamList, 'tags'>;
-type RouteProps = RouteProp<RootStackParamList, 'tags'>;
+type NavigationProps = StackNavigationProp<RootStackParamList, 'thumbnails'>;
+type RouteProps = RouteProp<RootStackParamList, 'thumbnails'>;
 
-function Tags() {
+export default function Thumbnails() {
   const navigation = useNavigation<NavigationProps>();
   const { tag } = useRoute<RouteProps>().params;
   const [isRandom, setIsRandom] = useState(0);
   const [page, setPage] = useState(0);
   const {
-    images,
-    setImages,
+    searchResultImages,
+    setSearchResultImages,
     savedImages,
     activeImage,
     setActiveImage,
@@ -58,18 +58,26 @@ function Tags() {
 
   useEffect(() => {
     if (promiseState && promiseState.data) {
-      setImages((prevState: Map<string, BooruResponsePost>) => {
+      setSearchResultImages((prevState: Map<string, ImageType>) => {
         if (promiseState.data!.length) {
           if (page === 0) {
             const newState = new Map();
             promiseState.data?.forEach((post) => {
-              newState.set(post.file_url, post);
+              newState.set(post.file_url, {
+                file_ext: post.file_ext,
+                file_url: post.file_url,
+                preview_file_url: post.preview_file_url,
+              });
             });
             return newState;
           } else {
             const newState = new Map(prevState);
             promiseState.data?.forEach((post) => {
-              newState.set(post.file_url, post);
+              newState.set(post.file_url, {
+                file_ext: post.file_ext,
+                file_url: post.file_url,
+                preview_file_url: post.preview_file_url,
+              });
             });
             return newState;
           }
@@ -77,24 +85,24 @@ function Tags() {
         return prevState;
       });
     }
-  }, [promiseState, setImages]);
+  }, [promiseState, setSearchResultImages]);
 
   const renderPostList = () => {
-    if (images.size) {
+    if (searchResultImages.size) {
       return (
         <View style={styles.flatListContainer}>
           <FlatList
-            data={[...images.values()]}
+            data={[...searchResultImages.values()]}
             renderItem={(el) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    if (el.item.file_url !== activeImage.raw) {
+                    if (el.item.file_url !== activeImage?.file_url) {
                       setActiveImage({ raw: el.item.file_url });
                     }
                     navigation.navigate('wallpaper', {
-                      imageId: el.item.id,
-                      imageUrl: el.item.file_url,
+                      image: el.item,
+                      type: 'search',
                     });
                   }}>
                   <FastImage
@@ -113,13 +121,13 @@ function Tags() {
               );
             }}
             numColumns={3}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.file_url.toString()}
             style={styles.listContainer}
             onEndReached={() => {
               setPage(page + 1);
             }}
             contentContainerStyle={styles.listContainerFlexPositioning}
-            extraData={images}
+            extraData={searchResultImages}
             ref={flatListRef}
           />
         </View>
@@ -134,7 +142,7 @@ function Tags() {
       <View style={styles.pageContainer}>
         {renderPostList()}
         {(() => {
-          if (images.size) return null;
+          if (searchResultImages.size) return null;
           if (!promiseState) return null;
           if (promiseState.status === 'loading') {
             return (
@@ -157,7 +165,7 @@ function Tags() {
           icon="shuffle"
           label="Randomize"
           action={() => {
-            setImages(new Map());
+            setSearchResultImages(new Map());
             setIsRandom(isRandom + 1);
           }}
         />
@@ -174,8 +182,6 @@ function Tags() {
     </Page>
   );
 }
-
-export default Tags;
 
 const styles = StyleSheet.create({
   pageContainer: {
@@ -208,7 +214,7 @@ const styles = StyleSheet.create({
   bottomNav: {
     position: 'absolute',
     width: WindowWidth,
-    top: WindowHeight - 36 - 9,
+    top: WindowHeight - 36 - 9 - menuBarHeight,
     right: 0,
     bottom: 0,
     left: 0,
