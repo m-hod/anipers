@@ -11,7 +11,6 @@ import { statusBarHeight, Colors, menuBarHeight } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
 import { useNavigation } from '@react-navigation/native';
-import Saved from '../saved/Saved';
 import IconButton from 'src/ui/components/IconButton';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
@@ -62,7 +61,6 @@ function TopNav({ folderActive }: { folderActive?: boolean }) {
           setSearchVisible(!searchIsVisible);
         }}
       />
-      <Saved />
     </View>
   );
 }

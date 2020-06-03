@@ -20,6 +20,7 @@ import IconButton from 'src/ui/components/IconButton';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import ImmersiveMode from 'react-native-immersive-mode';
 import ProgressiveImage from 'src/ui/components/ProgressiveImage';
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
 type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
@@ -77,7 +78,16 @@ function Wallpaper() {
               onPress={() => {
                 setFullscreen(!fullscreen);
               }}>
-              <ProgressiveImage image={el.item} />
+              <View style={styles.pageContainer}>
+                <ReactNativeZoomableView
+                  maxZoom={null}
+                  minZoom={1}
+                  zoomStep={0.5}
+                  initialZoom={1}
+                  bindToBorders={true}>
+                  <ProgressiveImage image={el.item} />
+                </ReactNativeZoomableView>
+              </View>
             </TouchableWithoutFeedback>
           )}
           initialScrollIndex={

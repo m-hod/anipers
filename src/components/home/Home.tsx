@@ -69,6 +69,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
     setSearchResultImages,
     currentSearchTag,
     setCurrentSearchTag,
+    setActiveImage,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -104,6 +105,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
           preview_file_url: responsePost.preview_file_url,
           file_url: responsePost.file_url,
         });
+
         setHeroImageUrl((prevState) => {
           if (prevState[0]) {
             const newState = [...prevState];
@@ -171,7 +173,6 @@ function TagsGroup({ category }: { category: TagCategories }) {
             onLoad={() => {
               setImageLoading(false);
               if (heroImageUrl.length) {
-                console.log(heroImageUrl);
                 setHeroImageUrl([heroImageUrl[heroImageUrl.length - 1]]);
               }
               setInitialLoad(false);
@@ -210,7 +211,6 @@ function HomeBottomNav({
         size={36}
         action={() => {
           if (image) {
-            setActiveImage(image);
             navigation.navigate('wallpaper', { image, type: 'home' });
           }
         }}
