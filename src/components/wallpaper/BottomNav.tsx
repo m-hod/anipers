@@ -14,6 +14,7 @@ import AppContext from 'src/AppContext';
 import { BooruResponsePost, ActiveImage, ImageType } from 'src/types';
 import RNFS from 'react-native-fs';
 import { parseFileUrl } from 'src/utils';
+import ManageWallpaper, { TYPE } from 'react-native-manage-wallpaper';
 
 function BottomNav({ image }: { image: ImageType }) {
   const {
@@ -114,6 +115,14 @@ function BottomNav({ image }: { image: ImageType }) {
           label="Set as Wallpaper"
           action={() => {
             console.log('set as wallpaper!');
+            console.log(image.file_url);
+            ManageWallpaper.setWallpaper(
+              { uri: image.file_url },
+              (res: any) => {
+                console.log(res);
+              },
+              TYPE.HOME,
+            );
           }}
           primary
         />
