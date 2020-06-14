@@ -114,8 +114,6 @@ function BottomNav({ image }: { image: ImageType }) {
           icon="wallpaper"
           label="Set as Wallpaper"
           action={() => {
-            console.log('set as wallpaper!');
-            console.log(image.file_url);
             ManageWallpaper.setWallpaper(
               { uri: image.file_url },
               (res: any) => {
@@ -130,6 +128,10 @@ function BottomNav({ image }: { image: ImageType }) {
     </>
   );
 }
+
+// bottom nav needs to update images on scroll
+// take cropped file url for actions if there is one - maybe fix quality loss bug before implementing this?
+// setting as wallpaper saves reference by default
 
 export default BottomNav;
 
