@@ -52,11 +52,13 @@ function Results() {
     if (promiseState.status === 'loaded' && promiseState.data) {
       const tagQueryString = promiseState.data[0].name;
       getRandomPostByTag(tagQueryString).then((res) => {
-        console.log(res[0]);
         setHeroImage({
           file_ext: res[0].file_ext,
           file_url: res[0].file_url,
           preview_file_url: res[0].preview_file_url,
+          tag_string: res[0].tag_string,
+          tag_string_artist: res[0].tag_string_artist,
+          pixiv_id: res[0].pixiv_id,
         });
       });
     }
@@ -148,7 +150,5 @@ const styles = StyleSheet.create({
   },
 });
 
-// user should never see a gray background
-// load until preview loaded
-// display blurred preview until full image loaded
+// display blurred preview until full image loaded - but don't display so early that there is a noticeable blur for a while before the image is loaded
 // if search again and already a background image, display that until next search complete - don't show tags until loaded again

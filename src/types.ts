@@ -1,9 +1,15 @@
 export type BooruResponsePost = {
   id: number;
   file_ext: string;
+  /** External file url */
   file_url: string;
-  tag_string: string;
+  /** Low-res file url for thumbnails */
   preview_file_url: string;
+  /** String consisting of tags separated by spaces  */
+  tag_string: string;
+  /** Artist Metadata */
+  tag_string_artist: string | null;
+  pixiv_id: string | null;
 };
 
 export type BooruAPIResponseTag = {
@@ -12,7 +18,6 @@ export type BooruAPIResponseTag = {
   post_count: number;
   category: number;
   updated_at: Date;
-  // string consisting of tags separated by spaces
   tag_list: string;
 };
 
@@ -39,12 +44,7 @@ export type ActiveImage = {
   edited?: string;
 };
 
-export type ImageType = {
-  file_ext: string;
-  /** Low-res file url for thumbnails */
-  preview_file_url: string;
-  /** External file url */
-  file_url: string;
+export type ImageType = Omit<BooruResponsePost, 'id'> & {
   /** Internal Url to cached reference */
   cropped_file_url?: string;
 };

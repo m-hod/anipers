@@ -32,6 +32,7 @@ function Wallpaper() {
     setActiveImage,
     savedImages,
   } = useContext(AppContext);
+  // active image needs to store new values too - check new tag meta values are stored everywhere they're needed
 
   const onViewRef = useRef((info: any) => {
     if (activeImage?.file_url !== info.viewableItems[0].item.file_url) {

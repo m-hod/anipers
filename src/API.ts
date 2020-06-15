@@ -1,6 +1,5 @@
 import { BooruAPIResponseTag, BooruResponsePost } from './types';
 import { checkSingleResponse, filterAPIResponses } from './utils';
-// import { filteredTags } from './constants';
 
 /**
  * Booru API Search Rules
@@ -79,6 +78,5 @@ export const getTagPosts = async (
   )
     .then((response) => response.json())
     .catch((e) => console.warn(e));
-  console.log(filterAPIResponses(data));
   return filterAPIResponses(data);
 };

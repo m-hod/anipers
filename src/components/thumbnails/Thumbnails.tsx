@@ -73,6 +73,9 @@ export default function Thumbnails() {
                 image_width: post.image_width,
                 //@ts-ignore
                 image_height: post.image_height,
+                tag_string: post.tag_string,
+                tag_string_artist: post.tag_string_artist,
+                pixiv_id: post.pixiv_id,
               });
             });
             return newState;
@@ -87,6 +90,9 @@ export default function Thumbnails() {
                 image_width: post.image_width,
                 //@ts-ignore
                 image_height: post.image_height,
+                tag_string: post.tag_string,
+                tag_string_artist: post.tag_string_artist,
+                pixiv_id: post.pixiv_id,
               });
             });
             return newState;

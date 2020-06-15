@@ -104,6 +104,9 @@ function TagsGroup({ category }: { category: TagCategories }) {
           file_ext: responsePost.file_ext,
           preview_file_url: responsePost.preview_file_url,
           file_url: responsePost.file_url,
+          tag_string: responsePost.tag_string,
+          tag_string_artist: responsePost.tag_string_artist,
+          pixiv_id: responsePost.pixiv_id,
         });
 
         setHeroImageUrl((prevState) => {

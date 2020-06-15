@@ -138,7 +138,6 @@ function BottomNav({ image }: { image: ImageType }) {
   );
 }
 
-// bottom nav needs to update images on scroll
 // take cropped file url for actions if there is one - maybe fix quality loss bug before implementing this?
 // setting as wallpaper saves reference by default
 
