@@ -1,5 +1,10 @@
 import React from 'react';
-import { BooruResponsePost, ActiveImage, ImageType } from './types';
+import {
+  BooruResponsePost,
+  ActiveImage,
+  ImageType,
+  StorageItems,
+} from './types';
 
 const AppContext = React.createContext<{
   /** Indicators of initial homepage background image loading state - app loading modal appears until resolved */
@@ -20,7 +25,7 @@ const AppContext = React.createContext<{
   searchResultImages: Map<string, ImageType>;
   setSearchResultImages(arg: any): void;
   /** Set of images urls saved in references file on local phone storage */
-  savedImages: Map<string, ImageType>;
+  savedImages: StorageItems | null;
   setSavedImages(arg: any): void;
   currentSearchTag: string;
   setCurrentSearchTag(arg: any): void;
@@ -35,7 +40,7 @@ const AppContext = React.createContext<{
   setStatusBarVisibility: () => {},
   activeImage: null,
   setActiveImage: () => {},
-  savedImages: new Map(),
+  savedImages: null,
   setSavedImages: () => {},
   currentSearchTag: '',
   setCurrentSearchTag: () => {},

@@ -6,15 +6,21 @@ import {
   menuBarHeight,
   WindowWidth,
   WindowHeight,
-  referencesFilePath,
   downloadsDirectoryPath,
+  dbKey,
 } from 'src/constants';
 import ImagePicker from 'react-native-image-crop-picker';
 import AppContext from 'src/AppContext';
-import { BooruResponsePost, ActiveImage, ImageType } from 'src/types';
+import {
+  BooruResponsePost,
+  ActiveImage,
+  ImageType,
+  StorageItems,
+} from 'src/types';
 import RNFS from 'react-native-fs';
 import { parseFileUrl } from 'src/utils';
 import ManageWallpaper, { TYPE } from 'react-native-manage-wallpaper';
+import AsyncStorage from '@react-native-community/async-storage';
 
 function BottomNav({ image }: { image: ImageType }) {
   const {
@@ -33,9 +39,9 @@ function BottomNav({ image }: { image: ImageType }) {
           label="Download"
           action={() => {
             RNFS.downloadFile({
-              fromUrl: activeImage?.file_url!,
+              fromUrl: activeImage!.file_url,
               toFile: `${downloadsDirectoryPath}/${parseFileUrl(
-                activeImage?.file_url!,
+                activeImage!.file_url,
               )}`,
             });
           }}
@@ -45,41 +51,46 @@ function BottomNav({ image }: { image: ImageType }) {
           icon="save"
           label="Save to Gallery"
           action={() => {
-            if (savedImages.has(image.file_url)) return;
-            RNFS.readFile(referencesFilePath)
-              .then((response) => {
-                const fileContents = JSON.parse(response);
-                const filteredFileContents = new Map(
-                  fileContents ? fileContents : [],
-                );
-                filteredFileContents.set(activeImage?.file_url!, activeImage);
-                RNFS.writeFile(
-                  referencesFilePath,
-                  JSON.stringify([...filteredFileContents]),
-                )
-                  .then((response) => {
-                    RNFS.readFile(referencesFilePath).then((_response) => {
-                      const updatedFileContents = JSON.parse(_response);
-                      setSavedImages(new Map(updatedFileContents));
-                    });
-                  })
-                  .catch((e) => {
-                    console.log(e);
-                  });
-              })
-              .catch((e) => console.log(e));
+            (async () => {
+              try {
+                const db = await AsyncStorage.getItem(dbKey);
+                const data = JSON.parse(db!);
+                data[activeImage!.file_url] = activeImage;
+                try {
+                  await AsyncStorage.setItem(dbKey, JSON.stringify(data));
+                  console.log('Updated db');
+                  const _db = await AsyncStorage.getItem(dbKey);
+                  const updatedData = JSON.parse(_db!);
+                  setSavedImages(updatedData);
+                } catch (e) {
+                  console.log('error updating database', e);
+                }
+              } catch (e) {
+                console.log('error retrieving database', e);
+              }
+            })();
           }}
           primary
-          variant={savedImages.has(image.file_url) ? 'saved' : undefined}
+          variant={
+            savedImages && !!savedImages[activeImage!.file_url]
+              ? 'saved'
+              : undefined
+          }
         />
         <IconButton
           icon="crop"
           label="Edit Crop"
           action={async () => {
             await ImagePicker.openCropper({
-              path: activeImage?.file_url!,
-              width: WindowWidth,
-              height: WindowHeight,
+              path: activeImage!.file_url,
+              //@ts-ignore
+              width:
+                // image.image_width /
+                WindowWidth,
+              //@ts-ignore
+              height:
+                // image.image_height /
+                WindowHeight,
               cropperToolbarTitle: 'Edit Image',
               cropperToolbarColor: '#FFFFFF',
               //@ts-ignore
@@ -92,15 +103,13 @@ function BottomNav({ image }: { image: ImageType }) {
               .then((_image: any) => {
                 setActiveImage((prevState: ImageType) => {
                   const newState = { ...prevState };
-                  console.log(newState);
                   newState.cropped_file_url = _image.path;
                   return newState;
                 });
                 setSearchResultImages((prevState: Map<string, ImageType>) => {
                   const newState = new Map(prevState);
-                  console.log(newState);
-                  newState.set(image.file_url, {
-                    ...newState.get(image.file_url)!,
+                  newState.set(activeImage!.file_url, {
+                    ...newState.get(activeImage!.file_url)!,
                     cropped_file_url: _image.path,
                   });
                   return newState;
@@ -115,7 +124,7 @@ function BottomNav({ image }: { image: ImageType }) {
           label="Set as Wallpaper"
           action={() => {
             ManageWallpaper.setWallpaper(
-              { uri: image.file_url },
+              { uri: activeImage!.file_url },
               (res: any) => {
                 console.log(res);
               },

@@ -103,8 +103,6 @@ export const filteredTags = new Set([
 ]);
 export const supportedFormats = new Set(['jpg', 'png']);
 
-export const wallpapersDirectoryPath = `${RNFS.DocumentDirectoryPath}/wallpapers`;
-export const referencesFilePath = `${RNFS.DocumentDirectoryPath}/wallpapers/references`;
 export const downloadsDirectoryPath = RNFS.DownloadDirectoryPath;
 
 export const homeTagsCategories = new Map<TagCategories, string>([
@@ -113,3 +111,5 @@ export const homeTagsCategories = new Map<TagCategories, string>([
   ['general', 'Tags'],
   ['artist', 'Artists'],
 ]);
+
+export const dbKey = 'booru_db';

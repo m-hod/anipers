@@ -26,7 +26,9 @@ function TopNav({ folderActive }: { folderActive?: boolean }) {
         label="Saved Wallpapers"
         icon="folder"
         action={() => {
-          navigation.navigate('collections');
+          folderActive
+            ? navigation.goBack()
+            : navigation.navigate('collections');
         }}
         primary={folderActive}
       />

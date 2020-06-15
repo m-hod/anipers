@@ -7,17 +7,14 @@ import {
   WindowWidth,
 } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, BooruResponsePost, ActiveImage } from 'src/types';
+import { RootStackParamList } from 'src/types';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import AppContext from 'src/AppContext';
 import {
   FlatList,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
-import FastImage from 'react-native-fast-image';
 import BottomNav from './BottomNav';
-import IconButton from 'src/ui/components/IconButton';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import ImmersiveMode from 'react-native-immersive-mode';
 import ProgressiveImage from 'src/ui/components/ProgressiveImage';
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
@@ -64,14 +61,14 @@ function Wallpaper() {
 
   return (
     <View style={styles.pageContainer}>
-      {searchResultImages.size ? (
+      {activeImage ? (
         <FlatList
           data={
             type === 'home'
               ? [image]
               : type === 'search'
-              ? [...searchResultImages.values()]
-              : [...savedImages.values()]
+              ? [...searchResultImages!.values()]
+              : [...Object.keys(savedImages!).map((key) => savedImages![key])]
           }
           renderItem={(el) => (
             <TouchableWithoutFeedback
@@ -97,9 +94,9 @@ function Wallpaper() {
               ? [...searchResultImages.values()].findIndex(
                   (post) => post.file_url === image.file_url,
                 )!
-              : [...savedImages.values()].findIndex(
-                  (post) => post.file_url === image.file_url,
-                )!
+              : [
+                  ...Object.keys(savedImages!).map((key) => savedImages![key]),
+                ].findIndex((post) => post.file_url === image.file_url)!
           }
           keyExtractor={(item) => item.file_url.toString()}
           horizontal

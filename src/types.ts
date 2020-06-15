@@ -48,3 +48,5 @@ export type ImageType = {
   /** Internal Url to cached reference */
   cropped_file_url?: string;
 };
+
+export type StorageItems = { [key: string]: ImageType };

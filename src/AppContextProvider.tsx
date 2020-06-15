@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import AppContext from './AppContext';
-import { BooruResponsePost, ActiveImage, ImageType } from './types';
-import RNFS from 'react-native-fs';
+import {
+  BooruResponsePost,
+  ActiveImage,
+  ImageType,
+  StorageItems,
+} from './types';
 import ImmersiveMode from 'react-native-immersive-mode';
-
-const appPath = RNFS.DocumentDirectoryPath;
+import AsyncStorage from '@react-native-community/async-storage';
+import { dbKey } from './constants';
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [promises, setPromises] = useState<Map<string, boolean>>(new Map());
@@ -15,11 +19,10 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     Map<string, ImageType>
   >(new Map());
   const [activeImage, setActiveImage] = useState<ImageType | null>(null);
-  const [savedImages, setSavedImages] = useState<Map<string, ImageType>>(
-    new Map(),
-  );
+  const [savedImages, setSavedImages] = useState<StorageItems | null>(null);
   const [currentSearchTag, setCurrentSearchTag] = useState('');
 
+  // Set App immersive mode
   useEffect(() => {
     ImmersiveMode.fullLayout(true);
     ImmersiveMode.setBarTranslucent(true);
@@ -28,39 +31,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  useEffect(() => {
-    RNFS.mkdir(`${appPath}/wallpapers`).then(() => {
-      RNFS.exists(`${appPath}/wallpapers/references`).then((response) => {
-        if (response) {
-          RNFS.readFile(`${appPath}/wallpapers/references`)
-            .then((response) => {
-              setSavedImages(() => {
-                const newState = new Map();
-                JSON.parse(response).forEach((imageItem: ImageType) => {
-                  newState.set(imageItem.file_url, imageItem);
-                });
-                return newState;
-              });
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        } else {
-          RNFS.writeFile(
-            `${appPath}/wallpapers/references`,
-            JSON.stringify([]),
-          ).catch((e) => {
-            console.log(e);
-          });
-        }
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    console.log(savedImages);
-  }, [savedImages]);
-
+  // Display modal layover until initial background image loading promises resolve
   useEffect(() => {
     if (appLoading) {
       if (promises.size) {
@@ -72,6 +43,38 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [appLoading, promises]);
+
+  // Get or Set app database
+  useEffect(() => {
+    getDB().then((res: StorageItems | null) => {
+      if (!res) {
+        setDB().then(() => console.log('Set DB'));
+      } else {
+        console.log('database', res);
+        setSavedImages(res);
+      }
+    });
+  }, []);
+
+  const getDB = async () => {
+    try {
+      const data = await AsyncStorage.getItem(dbKey);
+      console.log(data);
+      return data ? JSON.parse(data) : data;
+    } catch (e) {
+      console.log('error getting database', e);
+    }
+  };
+
+  const setDB = async () => {
+    try {
+      const data = JSON.stringify({});
+      await AsyncStorage.setItem(dbKey, data);
+      console.log('Set DB');
+    } catch (e) {
+      console.log('error setting database', e);
+    }
+  };
 
   return (
     <AppContext.Provider

@@ -211,6 +211,7 @@ function HomeBottomNav({
         size={36}
         action={() => {
           if (image) {
+            setActiveImage(image);
             navigation.navigate('wallpaper', { image, type: 'home' });
           }
         }}

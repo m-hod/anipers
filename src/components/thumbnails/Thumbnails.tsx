@@ -37,9 +37,9 @@ type RouteProps = RouteProp<RootStackParamList, 'thumbnails'>;
 
 export default function Thumbnails() {
   const navigation = useNavigation<NavigationProps>();
+  const flatListRef = useRef(null);
   const { tag } = useRoute<RouteProps>().params;
-  const [isRandom, setIsRandom] = useState(0);
-  const [page, setPage] = useState(0);
+
   const {
     searchResultImages,
     setSearchResultImages,
@@ -47,14 +47,16 @@ export default function Thumbnails() {
     activeImage,
     setActiveImage,
   } = useContext(AppContext);
+
+  const [isRandom, setIsRandom] = useState(0);
+  const [page, setPage] = useState(0);
+
   const promise = useCallback(() => getTagPosts(tag, page, !!isRandom), [
     tag,
     page,
     isRandom,
   ]);
-
   const promiseState = usePromise(promise);
-  const flatListRef = useRef(null);
 
   useEffect(() => {
     if (promiseState && promiseState.data) {
@@ -67,6 +69,10 @@ export default function Thumbnails() {
                 file_ext: post.file_ext,
                 file_url: post.file_url,
                 preview_file_url: post.preview_file_url,
+                //@ts-ignore
+                image_width: post.image_width,
+                //@ts-ignore
+                image_height: post.image_height,
               });
             });
             return newState;
@@ -77,6 +83,10 @@ export default function Thumbnails() {
                 file_ext: post.file_ext,
                 file_url: post.file_url,
                 preview_file_url: post.preview_file_url,
+                //@ts-ignore
+                image_width: post.image_width,
+                //@ts-ignore
+                image_height: post.image_height,
               });
             });
             return newState;
@@ -112,7 +122,7 @@ export default function Thumbnails() {
                     }}
                     style={[styles.image]}>
                     <View>
-                      {savedImages.has(el.item.file_url) && (
+                      {savedImages && !!savedImages[el.item.file_url] && (
                         <Icon size={28} name="save" style={styles.saveIcon} />
                       )}
                     </View>

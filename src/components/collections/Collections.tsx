@@ -5,7 +5,6 @@ import {
   Colors,
   statusBarHeight,
   menuBarHeight,
-  referencesFilePath,
   WindowHeight,
   WindowWidth,
   Fonts,
@@ -35,9 +34,9 @@ const Collections = () => {
     <View style={styles.container}>
       <TopNav folderActive />
       <View style={styles.subContainer}>
-        {savedImages.size ? (
+        {savedImages && Object.keys(savedImages).length ? (
           <FlatList
-            data={[...savedImages.values()]}
+            data={[...Object.keys(savedImages).map((key) => savedImages[key])]}
             renderItem={(el) => {
               return (
                 <TouchableOpacity
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: statusBarHeight + menuBarHeight,
-    paddingBottom: 15,
+    paddingBottom: 60,
     position: 'relative',
     zIndex: 1,
     flexGrow: 1,
