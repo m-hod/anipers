@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import TopNav from '../search/TopNav';
 import {
@@ -221,6 +222,9 @@ function HomeBottomNav({
         primary
       />
       <TouchableOpacity
+        onLongPress={() => {
+          ToastAndroid.show('Refresh Image', 5);
+        }}
         onPress={() => {
           setCount((prevCount: number) => prevCount + 1);
           setImageLoading(true);

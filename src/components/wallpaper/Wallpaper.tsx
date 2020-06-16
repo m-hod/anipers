@@ -34,6 +34,12 @@ function Wallpaper() {
   } = useContext(AppContext);
   // active image needs to store new values too - check new tag meta values are stored everywhere they're needed
 
+  useEffect(() => {
+    if (type === 'search') {
+      setActiveImage(image);
+    }
+  }, []);
+
   const onViewRef = useRef((info: any) => {
     if (activeImage?.file_url !== info.viewableItems[0].item.file_url) {
       const {
@@ -59,6 +65,8 @@ function Wallpaper() {
       ImmersiveMode.setBarMode('Normal');
     }
   }, [fullscreen]);
+
+  // flicker when bring up image from thumbnails
 
   return (
     <View style={styles.pageContainer}>

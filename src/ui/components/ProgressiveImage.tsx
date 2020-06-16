@@ -23,7 +23,9 @@ function ProgressiveImage({ image }: { image: ImageType }) {
         />
       )}
       <FastImage
-        source={{ uri: image.file_url }}
+        source={{
+          uri: image.cropped_file_url ? image.cropped_file_url : image.file_url,
+        }}
         style={[qualDisplayed ? styles.displayed : styles.hidden]}
         onLoad={() => {
           setBlur(false);

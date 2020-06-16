@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions, View, ToastAndroid } from 'react-native';
 import IconButton from 'src/ui/components/IconButton';
 import {
   Colors,
@@ -23,6 +23,7 @@ import ManageWallpaper, { TYPE } from 'react-native-manage-wallpaper';
 import AsyncStorage from '@react-native-community/async-storage';
 
 function BottomNav({ image }: { image: ImageType }) {
+  const [metadataVisibility, setMetadataVisibility] = useState(false);
   const {
     activeImage,
     setActiveImage,
@@ -34,6 +35,14 @@ function BottomNav({ image }: { image: ImageType }) {
   return (
     <>
       <View style={styles.container}>
+        {/* <IconButton
+          icon="info"
+          label="Metadata"
+          action={() => {
+            setMetadataVisibility(!metadataVisibility);
+          }}
+          primary={metadataVisibility}
+        /> */}
         <IconButton
           icon="get-app"
           label="Download"
@@ -43,6 +52,13 @@ function BottomNav({ image }: { image: ImageType }) {
               toFile: `${downloadsDirectoryPath}/${parseFileUrl(
                 activeImage!.file_url,
               )}`,
+            }).promise.then((res) => {
+              console.log(res);
+              if (res.statusCode === 200) {
+                ToastAndroid.show('Downloaded', 5);
+              } else {
+                ToastAndroid.show('Error', 5);
+              }
             });
           }}
           primary
@@ -58,15 +74,15 @@ function BottomNav({ image }: { image: ImageType }) {
                 data[activeImage!.file_url] = activeImage;
                 try {
                   await AsyncStorage.setItem(dbKey, JSON.stringify(data));
-                  console.log('Updated db');
                   const _db = await AsyncStorage.getItem(dbKey);
                   const updatedData = JSON.parse(_db!);
                   setSavedImages(updatedData);
+                  ToastAndroid.show('Saved', 5);
                 } catch (e) {
-                  console.log('error updating database', e);
+                  ToastAndroid.show('Error', 5);
                 }
               } catch (e) {
-                console.log('error retrieving database', e);
+                ToastAndroid.show('Error', 5);
               }
             })();
           }}
@@ -124,9 +140,17 @@ function BottomNav({ image }: { image: ImageType }) {
           label="Set as Wallpaper"
           action={() => {
             ManageWallpaper.setWallpaper(
-              { uri: activeImage!.file_url },
+              {
+                uri: activeImage!.cropped_file_url
+                  ? activeImage!.cropped_file_url
+                  : activeImage!.file_url,
+              },
               (res: any) => {
-                console.log(res);
+                if (res.status === 'success') {
+                  ToastAndroid.show('Wallpaper Set', 5);
+                } else {
+                  ToastAndroid.show('Error', 5);
+                }
               },
               TYPE.HOME,
             );
@@ -137,9 +161,6 @@ function BottomNav({ image }: { image: ImageType }) {
     </>
   );
 }
-
-// take cropped file url for actions if there is one - maybe fix quality loss bug before implementing this?
-// setting as wallpaper saves reference by default
 
 export default BottomNav;
 
