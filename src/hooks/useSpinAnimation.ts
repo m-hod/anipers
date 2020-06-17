@@ -16,7 +16,7 @@ const useSpinAnimation = () => {
         toValue: 1,
         duration: 4000,
         easing: Easing.linear,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start(() => spinIcon());
     };
     spinIcon();

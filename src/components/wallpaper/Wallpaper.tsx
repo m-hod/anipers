@@ -28,6 +28,7 @@ import ProgressiveImage from 'src/ui/components/ProgressiveImage';
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { parseTagName } from 'src/utils';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import useFadeAnimation from 'src/hooks/useFadeAnimation';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
 type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
@@ -35,6 +36,7 @@ type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
 function Wallpaper() {
   const { image, type } = useRoute<RouteProps>().params;
   const [fullscreen, setFullscreen] = useState(false);
+  const [localFullscreen, setLocalFullscreen] = useState(false);
   const {
     searchResultImages,
     setSearchResultImages,
@@ -50,9 +52,7 @@ function Wallpaper() {
   }, []);
 
   const onViewRef = useRef((info: any) => {
-    if (activeImage?.file_url !== info.viewableItems[0].item.file_url) {
-      setActiveImage(info.viewableItems[0].item);
-    }
+    setActiveImage(info.viewableItems[0].item);
   });
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
@@ -140,7 +140,7 @@ function Wallpaper() {
           })}
         />
       ) : null}
-      {!fullscreen && <BottomNav image={image} />}
+      <BottomNav image={image} fullscreen={fullscreen} />
     </View>
   );
 }

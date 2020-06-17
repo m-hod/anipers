@@ -1,5 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Dimensions, View, ToastAndroid } from 'react-native';
+import {
+  StyleSheet,
+  Dimensions,
+  View,
+  ToastAndroid,
+  PixelRatio,
+  Animated,
+} from 'react-native';
 import IconButton from 'src/ui/components/IconButton';
 import {
   Colors,
@@ -21,8 +28,15 @@ import RNFS from 'react-native-fs';
 import { parseFileUrl } from 'src/utils';
 import ManageWallpaper, { TYPE } from 'react-native-manage-wallpaper';
 import AsyncStorage from '@react-native-community/async-storage';
+import useFadeAnimation from 'src/hooks/useFadeAnimation';
 
-function BottomNav({ image }: { image: ImageType }) {
+function BottomNav({
+  image,
+  fullscreen,
+}: {
+  image: ImageType;
+  fullscreen: boolean;
+}) {
   const [metadataVisibility, setMetadataVisibility] = useState(false);
   const {
     activeImage,
@@ -31,10 +45,13 @@ function BottomNav({ image }: { image: ImageType }) {
     savedImages,
     setSavedImages,
   } = useContext(AppContext);
+  const fadeAnim = useFadeAnimation(fullscreen);
+
+  console.log(fadeAnim);
 
   return (
     <>
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <IconButton
           icon="get-app"
           label="Download"
@@ -113,16 +130,33 @@ function BottomNav({ image }: { image: ImageType }) {
           icon="crop"
           label="Edit Crop"
           action={async () => {
+            if (activeImage?.cropped_file_url) {
+              setActiveImage((prevState: ImageType) => {
+                const { cropped_file_url, ...rest } = prevState;
+                const newState = { ...rest };
+                return newState;
+              });
+              setSearchResultImages((prevState: Map<string, ImageType>) => {
+                const newState = new Map(prevState);
+                const { cropped_file_url, ...rest } = newState.get(
+                  activeImage!.file_url,
+                )!;
+                newState.set(activeImage!.file_url, {
+                  ...rest,
+                });
+                return newState;
+              });
+              ToastAndroid.show('Crop removed', 5);
+              return;
+            }
+            {
+              console.log(PixelRatio.get());
+              console.log('aspect ratio:', WindowWidth / WindowHeight);
+            }
             await ImagePicker.openCropper({
               path: activeImage!.file_url,
-              //@ts-ignore
-              width:
-                // image.image_width /
-                WindowWidth,
-              //@ts-ignore
-              height:
-                // image.image_height /
-                WindowHeight,
+              width: WindowWidth * PixelRatio.get(),
+              height: WindowHeight * PixelRatio.get(),
               cropperToolbarTitle: 'Edit Image',
               cropperToolbarColor: '#FFFFFF',
               //@ts-ignore
@@ -152,6 +186,7 @@ function BottomNav({ image }: { image: ImageType }) {
               .catch((e: Error) => console.log(e));
           }}
           primary
+          variant={activeImage?.cropped_file_url ? 'saved' : undefined}
         />
         <IconButton
           icon="wallpaper"
@@ -175,7 +210,7 @@ function BottomNav({ image }: { image: ImageType }) {
           }}
           primary
         />
-      </View>
+      </Animated.View>
     </>
   );
 }

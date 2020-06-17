@@ -69,10 +69,6 @@ export default function Thumbnails() {
                 file_ext: post.file_ext,
                 file_url: post.file_url,
                 preview_file_url: post.preview_file_url,
-                //@ts-ignore
-                image_width: post.image_width,
-                //@ts-ignore
-                image_height: post.image_height,
                 tag_string_artist: post.tag_string_artist,
                 pixiv_id: post.pixiv_id,
               });
@@ -85,10 +81,6 @@ export default function Thumbnails() {
                 file_ext: post.file_ext,
                 file_url: post.file_url,
                 preview_file_url: post.preview_file_url,
-                //@ts-ignore
-                image_width: post.image_width,
-                //@ts-ignore
-                image_height: post.image_height,
                 tag_string_artist: post.tag_string_artist,
                 pixiv_id: post.pixiv_id,
               });
