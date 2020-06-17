@@ -5,7 +5,6 @@ export type BooruResponsePost = {
   file_url: string;
   /** Low-res file url for thumbnails */
   preview_file_url: string;
-  /** String consisting of tags separated by spaces  */
   tag_string: string;
   /** Artist Metadata */
   tag_string_artist: string | null;
@@ -44,7 +43,7 @@ export type ActiveImage = {
   edited?: string;
 };
 
-export type ImageType = Omit<BooruResponsePost, 'id'> & {
+export type ImageType = Omit<BooruResponsePost, 'id' | 'tag_string'> & {
   /** Internal Url to cached reference */
   cropped_file_url?: string;
 };

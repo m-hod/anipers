@@ -49,14 +49,13 @@ function Results() {
   const promiseState = usePromise(promise);
 
   useEffect(() => {
-    if (promiseState.status === 'loaded' && promiseState.data) {
+    if (promiseState.status === 'loaded' && promiseState.data?.length) {
       const tagQueryString = promiseState.data[0].name;
       getRandomPostByTag(tagQueryString).then((res) => {
         setHeroImage({
           file_ext: res[0].file_ext,
           file_url: res[0].file_url,
           preview_file_url: res[0].preview_file_url,
-          tag_string: res[0].tag_string,
           tag_string_artist: res[0].tag_string_artist,
           pixiv_id: res[0].pixiv_id,
         });
@@ -66,11 +65,19 @@ function Results() {
 
   const renderTagTabs = () => {
     if (promiseState.status === 'loading') {
-      return <ActivityIndicator />;
+      return <ActivityIndicator color="rgba(255,255,255,0.9)" size={60} />;
     }
 
     if (promiseState.status === 'error') {
       return <Text>{promiseState.error || 'Error'}</Text>;
+    }
+
+    if (promiseState.status === 'loaded' && !promiseState.data?.length) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.empty}>No results found!</Text>
+        </View>
+      );
     }
 
     if (promiseState.status === 'loaded' && promiseState.data) {
@@ -103,7 +110,6 @@ function Results() {
       title={query ? query : 'All'}
       altTitle="Showing closest matches for:">
       <TopNav />
-      {/* Put in an annotation (tooltip?) - post result tallies are calculated before filtering images unsuitable for wallpapers */}
       <View style={styles.tagContainer}>{renderTagTabs()}</View>
       <View style={styles.image}>
         {heroImage && <ProgressiveImage image={heroImage} />}
@@ -148,7 +154,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: WindowWidth - 20 - 36,
   },
+  emptyContainer: {
+    height: 60,
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  empty: {
+    ...Fonts.regular,
+  },
 });
-
-// display blurred preview until full image loaded - but don't display so early that there is a noticeable blur for a while before the image is loaded
-// if search again and already a background image, display that until next search complete - don't show tags until loaded again

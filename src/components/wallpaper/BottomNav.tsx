@@ -35,14 +35,6 @@ function BottomNav({ image }: { image: ImageType }) {
   return (
     <>
       <View style={styles.container}>
-        {/* <IconButton
-          icon="info"
-          label="Metadata"
-          action={() => {
-            setMetadataVisibility(!metadataVisibility);
-          }}
-          primary={metadataVisibility}
-        /> */}
         <IconButton
           icon="get-app"
           label="Download"
@@ -67,24 +59,48 @@ function BottomNav({ image }: { image: ImageType }) {
           icon="save"
           label="Save to Gallery"
           action={() => {
-            (async () => {
-              try {
-                const db = await AsyncStorage.getItem(dbKey);
-                const data = JSON.parse(db!);
-                data[activeImage!.file_url] = activeImage;
+            if (savedImages && !!savedImages[activeImage!.file_url]) {
+              (async () => {
                 try {
-                  await AsyncStorage.setItem(dbKey, JSON.stringify(data));
-                  const _db = await AsyncStorage.getItem(dbKey);
-                  const updatedData = JSON.parse(_db!);
-                  setSavedImages(updatedData);
-                  ToastAndroid.show('Saved', 5);
+                  const db = await AsyncStorage.getItem(dbKey);
+                  const data = JSON.parse(db!);
+                  const {
+                    [activeImage!.file_url]: removedImage,
+                    ...rest
+                  } = data;
+                  try {
+                    await AsyncStorage.setItem(dbKey, JSON.stringify(rest));
+                    const _db = await AsyncStorage.getItem(dbKey);
+                    const updatedData = JSON.parse(_db!);
+                    setSavedImages(updatedData);
+                    ToastAndroid.show('Removed', 5);
+                  } catch (e) {
+                    ToastAndroid.show('Error', 5);
+                  }
                 } catch (e) {
                   ToastAndroid.show('Error', 5);
                 }
-              } catch (e) {
-                ToastAndroid.show('Error', 5);
-              }
-            })();
+              })();
+            } else {
+              (async () => {
+                try {
+                  const db = await AsyncStorage.getItem(dbKey);
+                  const data = JSON.parse(db!);
+                  data[activeImage!.file_url] = activeImage;
+                  try {
+                    await AsyncStorage.setItem(dbKey, JSON.stringify(data));
+                    const _db = await AsyncStorage.getItem(dbKey);
+                    const updatedData = JSON.parse(_db!);
+                    setSavedImages(updatedData);
+                    ToastAndroid.show('Saved', 5);
+                  } catch (e) {
+                    ToastAndroid.show('Error', 5);
+                  }
+                } catch (e) {
+                  ToastAndroid.show('Error', 5);
+                }
+              })();
+            }
           }}
           primary
           variant={
@@ -116,6 +132,8 @@ function BottomNav({ image }: { image: ImageType }) {
               hideBottomControls: true,
               compressImageQuality: 1,
             })
+              // if mode = saved, need to save updated crop to db
+              // if mode = home, need to save updated crop to home image locations
               .then((_image: any) => {
                 setActiveImage((prevState: ImageType) => {
                   const newState = { ...prevState };

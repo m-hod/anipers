@@ -73,7 +73,6 @@ export default function Thumbnails() {
                 image_width: post.image_width,
                 //@ts-ignore
                 image_height: post.image_height,
-                tag_string: post.tag_string,
                 tag_string_artist: post.tag_string_artist,
                 pixiv_id: post.pixiv_id,
               });
@@ -90,7 +89,6 @@ export default function Thumbnails() {
                 image_width: post.image_width,
                 //@ts-ignore
                 image_height: post.image_height,
-                tag_string: post.tag_string,
                 tag_string_artist: post.tag_string_artist,
                 pixiv_id: post.pixiv_id,
               });
@@ -114,7 +112,7 @@ export default function Thumbnails() {
                 <TouchableOpacity
                   onPress={() => {
                     if (el.item.file_url !== activeImage?.file_url) {
-                      setActiveImage({ raw: el.item.file_url });
+                      setActiveImage(el.item);
                     }
                     navigation.navigate('wallpaper', {
                       image: el.item,
@@ -163,7 +161,7 @@ export default function Thumbnails() {
           if (promiseState.status === 'loading') {
             return (
               <View style={styles.fillContainer}>
-                <ActivityIndicator size="large" />
+                <ActivityIndicator color="rgba(255,255,255,0.9)" size={60} />
               </View>
             );
           }

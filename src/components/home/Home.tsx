@@ -40,8 +40,21 @@ type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
 export default function Home() {
   const { appLoading } = useContext(AppContext);
+  const [initialBoot, setInitialBoot] = useState(true);
+
+  useEffect(() => {
+    if (appLoading) {
+      const timer = setTimeout(() => {
+        setInitialBoot(false);
+      }, 250);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, []);
+
   return (
-    <View>
+    <View style={initialBoot ? styles.hidden : null}>
       <TopNav />
       <ScrollView horizontal pagingEnabled>
         {[...homeTagsCategories.keys()].map((category, i) => (
@@ -105,7 +118,6 @@ function TagsGroup({ category }: { category: TagCategories }) {
           file_ext: responsePost.file_ext,
           preview_file_url: responsePost.preview_file_url,
           file_url: responsePost.file_url,
-          tag_string: responsePost.tag_string,
           tag_string_artist: responsePost.tag_string_artist,
           pixiv_id: responsePost.pixiv_id,
         });
@@ -125,7 +137,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {
-      return <ActivityIndicator />;
+      return <ActivityIndicator color="rgba(255,255,255,0.9)" size={60} />;
     }
 
     if (promiseState.status === 'error') {
@@ -236,6 +248,9 @@ function HomeBottomNav({
 }
 
 const styles = StyleSheet.create({
+  hidden: {
+    display: 'none',
+  },
   tagContainer: {
     marginVertical: 20,
     height: Dimensions.get('window').height / 2,

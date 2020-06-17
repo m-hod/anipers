@@ -9,7 +9,7 @@ const AppLoadingModal = () => {
   return (
     <Modal visible={visibility}>
       <View style={styles.pageContainer}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator color="rgba(255,255,255,0.9)" size={60} />
       </View>
     </Modal>
   );

@@ -28,11 +28,7 @@ function IconButton({
       <TouchableOpacity
         onLongPress={() => {
           ToastAndroid.show(label, 5);
-          // setTooltipVisibility(true);
         }}
-        // onPressOut={() => {
-        //   setTooltipVisibility(false);
-        // }}
         onPress={() => {
           if (disabled) return;
           action();

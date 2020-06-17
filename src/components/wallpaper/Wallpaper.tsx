@@ -1,10 +1,18 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { StyleSheet, Image, View, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  View,
+  Dimensions,
+  Text,
+  Linking,
+} from 'react-native';
 import {
   Layout,
   menuBarHeight,
   WindowHeight,
   WindowWidth,
+  statusBarHeight,
 } from 'src/constants';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/types';
@@ -18,6 +26,8 @@ import BottomNav from './BottomNav';
 import ImmersiveMode from 'react-native-immersive-mode';
 import ProgressiveImage from 'src/ui/components/ProgressiveImage';
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+import { parseTagName } from 'src/utils';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
 type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
@@ -32,7 +42,6 @@ function Wallpaper() {
     setActiveImage,
     savedImages,
   } = useContext(AppContext);
-  // active image needs to store new values too - check new tag meta values are stored everywhere they're needed
 
   useEffect(() => {
     if (type === 'search') {
@@ -42,18 +51,7 @@ function Wallpaper() {
 
   const onViewRef = useRef((info: any) => {
     if (activeImage?.file_url !== info.viewableItems[0].item.file_url) {
-      const {
-        file_url,
-        file_ext,
-        preview_file_url,
-        cropped_file_url,
-      } = info.viewableItems[0].item;
-      setActiveImage({
-        file_url,
-        file_ext,
-        preview_file_url,
-        cropped_file_url: cropped_file_url ? cropped_file_url : undefined,
-      });
+      setActiveImage(info.viewableItems[0].item);
     }
   });
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
@@ -65,8 +63,6 @@ function Wallpaper() {
       ImmersiveMode.setBarMode('Normal');
     }
   }, [fullscreen]);
-
-  // flicker when bring up image from thumbnails
 
   return (
     <View style={styles.pageContainer}>
@@ -93,6 +89,26 @@ function Wallpaper() {
                   bindToBorders={true}>
                   <ProgressiveImage image={el.item} />
                 </ReactNativeZoomableView>
+                {!fullscreen && (
+                  <View style={styles.metadataContainer}>
+                    <TouchableWithoutFeedback
+                      onPress={() => {
+                        if (el.item.tag_string_artist && el.item.pixiv_id) {
+                          Linking.openURL(
+                            `https://www.pixiv.net/en/artworks/${el.item.pixiv_id}`,
+                          );
+                        }
+                      }}
+                      style={styles.metadataSubContainer}>
+                      <Text style={styles.metadata}>
+                        {el.item.tag_string_artist
+                          ? `By: ${parseTagName(el.item.tag_string_artist)}`
+                          : ''}
+                      </Text>
+                      <Icon name="link" style={styles.metadataIcon} />
+                    </TouchableWithoutFeedback>
+                  </View>
+                )}
               </View>
             </TouchableWithoutFeedback>
           )}
@@ -116,6 +132,7 @@ function Wallpaper() {
           // onEndReached={() => {
           //   setPage(page + 1);
           // }}
+          // extraData={searchResultImages}
           getItemLayout={(data, index) => ({
             offset: WindowWidth * index,
             length: WindowWidth,
@@ -134,5 +151,29 @@ const styles = StyleSheet.create({
   pageContainer: {
     ...Layout.pageContainer,
     position: 'relative',
+  },
+  metadataContainer: {
+    position: 'absolute',
+    marginTop: statusBarHeight + 5,
+    marginLeft: 5,
+  },
+  metadataSubContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  metadata: {
+    fontSize: 18,
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowColor: 'rgba(0,0,0,0.75)',
+    textShadowRadius: 1,
+    color: 'white',
+  },
+  metadataIcon: {
+    marginLeft: 2.5,
+    color: 'white',
+    transform: [{ rotate: '-45deg' }],
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowColor: 'rgba(0,0,0,0.75)',
+    textShadowRadius: 1,
   },
 });
