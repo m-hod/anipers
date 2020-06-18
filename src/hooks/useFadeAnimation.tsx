@@ -7,20 +7,18 @@ const useFadeAnimation = (trigger: boolean) => {
   useEffect(() => {
     if (!fadeAnim) return;
     if (trigger) {
-      console.log('fade out');
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 100,
-        useNativeDriver: false,
-        easing: Easing.linear,
+        duration: 250,
+        useNativeDriver: true,
+        easing: Easing.ease,
       }).start();
     } else if (!trigger) {
-      console.log('fade in');
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 100,
-        useNativeDriver: false,
-        easing: Easing.linear,
+        duration: 500,
+        useNativeDriver: true,
+        easing: Easing.ease,
       }).start();
     }
   }, [fadeAnim, trigger]);

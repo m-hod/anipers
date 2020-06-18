@@ -32,11 +32,13 @@ export type MappedTagCategories = {
 export type RootStackParamList = {
   home: undefined;
   thumbnails: { tag: string };
-  wallpaper: { image: ImageType; type: 'search' | 'saved' | 'home' };
+  wallpaper: { image: ImageType; type: WallpaperMode };
   results: { query: string };
   collections: undefined;
   collection: { fileName: string };
 };
+
+export type WallpaperMode = 'search' | 'saved' | 'home';
 
 export type ActiveImage = {
   raw: string;

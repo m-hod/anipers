@@ -6,6 +6,7 @@ import {
   Dimensions,
   Text,
   Linking,
+  Animated,
 } from 'react-native';
 import {
   Layout,
@@ -36,19 +37,20 @@ type RouteProps = RouteProp<RootStackParamList, 'wallpaper'>;
 function Wallpaper() {
   const { image, type } = useRoute<RouteProps>().params;
   const [fullscreen, setFullscreen] = useState(false);
-  const [localFullscreen, setLocalFullscreen] = useState(false);
+  const fadeAnim = useFadeAnimation(fullscreen);
+  const [debounceScroll, setDebounceScroll] = useState(true);
   const {
     searchResultImages,
     setSearchResultImages,
     activeImage,
     setActiveImage,
     savedImages,
+    homeImages,
+    setHomeImages,
   } = useContext(AppContext);
 
   useEffect(() => {
-    if (type === 'search') {
-      setActiveImage(image);
-    }
+    setActiveImage(image);
   }, []);
 
   const onViewRef = useRef((info: any) => {
@@ -64,13 +66,25 @@ function Wallpaper() {
     }
   }, [fullscreen]);
 
+  useEffect(() => {
+    if (debounceScroll) {
+      const timer = setTimeout(() => {
+        setDebounceScroll(false);
+      }, 100);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [debounceScroll]);
+
   return (
     <View style={styles.pageContainer}>
       {activeImage ? (
         <FlatList
+          scrollEnabled={!debounceScroll}
           data={
             type === 'home'
-              ? [image]
+              ? [homeImages.get(image.file_url)!]
               : type === 'search'
               ? [...searchResultImages!.values()]
               : [...Object.keys(savedImages!).map((key) => savedImages![key])]
@@ -90,7 +104,8 @@ function Wallpaper() {
                   <ProgressiveImage image={el.item} />
                 </ReactNativeZoomableView>
                 {!fullscreen && (
-                  <View style={styles.metadataContainer}>
+                  <Animated.View
+                    style={[styles.metadataContainer, { opacity: fadeAnim }]}>
                     <TouchableWithoutFeedback
                       onPress={() => {
                         if (el.item.tag_string_artist && el.item.pixiv_id) {
@@ -107,7 +122,7 @@ function Wallpaper() {
                       </Text>
                       <Icon name="link" style={styles.metadataIcon} />
                     </TouchableWithoutFeedback>
-                  </View>
+                  </Animated.View>
                 )}
               </View>
             </TouchableWithoutFeedback>
@@ -140,7 +155,7 @@ function Wallpaper() {
           })}
         />
       ) : null}
-      <BottomNav image={image} fullscreen={fullscreen} />
+      <BottomNav image={image} fullscreen={fullscreen} type={type} />
     </View>
   );
 }

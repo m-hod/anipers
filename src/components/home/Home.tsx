@@ -84,6 +84,8 @@ function TagsGroup({ category }: { category: TagCategories }) {
     currentSearchTag,
     setCurrentSearchTag,
     setActiveImage,
+    setHomeImages,
+    homeImages,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -135,6 +137,27 @@ function TagsGroup({ category }: { category: TagCategories }) {
     }
   }, [promiseState, count]);
 
+  useEffect(() => {
+    if (heroImageUrl[0] && currentImage) {
+      setHomeImages((prevState: Map<string, ImageType>) => {
+        const newState = new Map([...prevState]);
+        newState.set(heroImageUrl[0], currentImage);
+        return newState;
+      });
+    }
+  }, [heroImageUrl]);
+
+  // useEffect(() => {
+  //   console.log('re-remder');
+  //   if (
+  //     homeImages.has(heroImageUrl[0]) &&
+  //     homeImages.get(heroImageUrl[0])?.cropped_file_url
+  //   ) {
+  //     //@ts-ignore
+  //     setHeroImageUrl([homeImages.get(heroImageUrl[0])!.cropped_file_url]);
+  //   }
+  // }, [homeImages]);
+
   const renderTags = () => {
     if (promiseState.status === 'loading') {
       return <ActivityIndicator color="rgba(255,255,255,0.9)" size={60} />;
@@ -179,7 +202,9 @@ function TagsGroup({ category }: { category: TagCategories }) {
         heroImageUrl.map((imageUrl) => (
           <FastImage
             key={imageUrl}
-            source={{ uri: imageUrl }}
+            source={{
+              uri: imageUrl,
+            }}
             style={[styles.image]}
             onLoadStart={() => {
               if (!imageLoading) {

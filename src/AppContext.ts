@@ -29,6 +29,8 @@ const AppContext = React.createContext<{
   setSavedImages(arg: any): void;
   currentSearchTag: string;
   setCurrentSearchTag(arg: any): void;
+  homeImages: Map<string, ImageType>;
+  setHomeImages(arg: any): void;
 }>({
   appLoading: true,
   setAppLoading: () => {},
@@ -44,6 +46,8 @@ const AppContext = React.createContext<{
   setSavedImages: () => {},
   currentSearchTag: '',
   setCurrentSearchTag: () => {},
+  homeImages: new Map(),
+  setHomeImages: () => {},
 });
 
 export default AppContext;

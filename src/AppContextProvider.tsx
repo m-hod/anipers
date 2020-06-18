@@ -21,6 +21,9 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeImage, setActiveImage] = useState<ImageType | null>(null);
   const [savedImages, setSavedImages] = useState<StorageItems | null>(null);
   const [currentSearchTag, setCurrentSearchTag] = useState('');
+  const [homeImages, setHomeImages] = useState<Map<string, ImageType>>(
+    new Map(),
+  );
 
   // Set App immersive mode
   useEffect(() => {
@@ -93,6 +96,8 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         setSavedImages,
         currentSearchTag,
         setCurrentSearchTag,
+        homeImages,
+        setHomeImages,
       }}>
       {children}
     </AppContext.Provider>

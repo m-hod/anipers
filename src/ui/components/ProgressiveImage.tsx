@@ -8,6 +8,7 @@ import { Layout, WindowHeight, WindowWidth } from 'src/constants';
 function ProgressiveImage({ image }: { image: ImageType }) {
   const [qualDisplayed, setQualDisplayed] = useState(false);
   const [blur, setBlur] = useState(true);
+
   return (
     <View style={Layout.pageContainer}>
       <FastImage
