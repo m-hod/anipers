@@ -1,7 +1,14 @@
-import React, { useContext } from 'react';
-import { Modal, StyleSheet, View, ActivityIndicator } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  Modal,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
 import { Layout } from 'src/constants';
 import AppContext from 'src/AppContext';
+import { ProgressBar } from '@react-native-community/progress-bar-android';
 
 const AppLoadingModal = () => {
   const visibility = useContext(AppContext).appLoading;
@@ -9,7 +16,15 @@ const AppLoadingModal = () => {
   return (
     <Modal visible={visibility}>
       <View style={styles.pageContainer}>
-        <ActivityIndicator color="rgba(255,255,255,0.9)" size={60} />
+        <Image
+          source={require('../../../public/logo-final.png')}
+          style={styles.image}
+        />
+        <ProgressBar
+          styleAttr="Horizontal"
+          color="rgb(3, 169, 255)"
+          style={{ width: 75 }}
+        />
       </View>
     </Modal>
   );
@@ -32,5 +47,9 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     color: '#FFFFFF',
     top: 0,
+  },
+  image: {
+    height: 75,
+    width: 75,
   },
 });
