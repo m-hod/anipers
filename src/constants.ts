@@ -100,6 +100,8 @@ export const filteredTags = new Set([
   'lineart',
   'emphasis_lines',
   'monochrome',
+  'chart',
+  'comicstudio',
 ]);
 export const supportedFormats = new Set(['jpg', 'png']);
 

@@ -27,7 +27,6 @@ function ProgressiveImage({
         <BlurView
           blurType="light"
           blurAmount={10}
-          reducedTransparencyFallbackColor="white"
           style={[qualDisplayed ? styles.hidden : styles.displayed]}
         />
       )}

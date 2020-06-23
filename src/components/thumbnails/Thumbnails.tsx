@@ -33,6 +33,7 @@ import AppContext from 'src/AppContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
 import IconButton from 'src/ui/components/IconButton';
+import { BlurView } from '@react-native-community/blur';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'thumbnails'>;
 type RouteProps = RouteProp<RootStackParamList, 'thumbnails'>;
@@ -99,7 +100,7 @@ export default function Thumbnails() {
   const renderPostList = () => {
     if (searchResultImages.size) {
       return (
-        <View style={styles.flatListContainer}>
+        <BlurView style={styles.flatListContainer}>
           <FlatList
             data={[...searchResultImages.values()]}
             renderItem={(el) => {
@@ -139,7 +140,7 @@ export default function Thumbnails() {
             extraData={searchResultImages}
             ref={flatListRef}
           />
-        </View>
+        </BlurView>
       );
     }
     return null;
@@ -247,5 +248,10 @@ const styles = StyleSheet.create({
   saveIcon: {
     color: Colors.iconColorSaved,
     margin: 5,
+  },
+  blur: {
+    position: 'absolute',
+    height: WindowHeight / 4.25,
+    width: WindowWidth / 4.25,
   },
 });
