@@ -2,17 +2,25 @@ import React, { useState } from 'react';
 import { ImageType } from 'src/types';
 import FastImage from 'react-native-fast-image';
 import { BlurView } from '@react-native-community/blur';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { Layout, WindowHeight, WindowWidth } from 'src/constants';
 
-function ProgressiveImage({ image }: { image: ImageType }) {
+function ProgressiveImage({
+  image,
+  type,
+}: {
+  image: ImageType;
+  type?: 'result';
+}) {
   const [qualDisplayed, setQualDisplayed] = useState(false);
-  const [blur, setBlur] = useState(true);
+  const [blur, setBlur] = useState(type === 'result' ? false : true);
 
   return (
     <View style={Layout.pageContainer}>
-      <FastImage
+      <Image
+        onLoad={() => setBlur(true)}
         source={{ uri: image.preview_file_url }}
+        //@ts-ignore
         style={[qualDisplayed ? styles.hidden : styles.displayed]}
       />
       {blur && (
@@ -23,10 +31,11 @@ function ProgressiveImage({ image }: { image: ImageType }) {
           style={[qualDisplayed ? styles.hidden : styles.displayed]}
         />
       )}
-      <FastImage
+      <Image
         source={{
           uri: image.cropped_file_url ? image.cropped_file_url : image.file_url,
         }}
+        //@ts-ignore
         style={[qualDisplayed ? styles.displayed : styles.hidden]}
         onLoad={() => {
           setBlur(false);

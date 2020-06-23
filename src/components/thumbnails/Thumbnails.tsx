@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useContext,
   useRef,
+  useLayoutEffect,
 } from 'react';
 import {
   Text,
@@ -12,6 +13,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { RootStackParamList, BooruResponsePost, ImageType } from 'src/types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -46,10 +48,11 @@ export default function Thumbnails() {
     savedImages,
     activeImage,
     setActiveImage,
+    page,
+    setPage,
   } = useContext(AppContext);
 
   const [isRandom, setIsRandom] = useState(0);
-  const [page, setPage] = useState(0);
 
   const promise = useCallback(() => getTagPosts(tag, page, !!isRandom), [
     tag,
@@ -59,7 +62,7 @@ export default function Thumbnails() {
   const promiseState = usePromise(promise);
 
   useEffect(() => {
-    if (promiseState && promiseState.data) {
+    if (promiseState.status === 'loaded' && promiseState.data) {
       setSearchResultImages((prevState: Map<string, ImageType>) => {
         if (promiseState.data!.length) {
           if (page === 0) {
@@ -111,22 +114,22 @@ export default function Thumbnails() {
                       type: 'search',
                     });
                   }}>
-                  <FastImage
+                  <Image
                     source={{
-                      uri: el.item.file_url,
-                      priority: FastImage.priority.high,
+                      uri: el.item.preview_file_url,
+                      // priority: FastImage.priority.high,
                     }}
-                    style={[styles.image]}>
-                    <View>
-                      {savedImages && !!savedImages[el.item.file_url] && (
-                        <Icon size={28} name="save" style={styles.saveIcon} />
-                      )}
-                    </View>
-                  </FastImage>
+                    style={[styles.image]}
+                  />
+                  <View style={styles.saveIconOverlay}>
+                    {savedImages && !!savedImages[el.item.file_url] && (
+                      <Icon size={28} name="save" style={styles.saveIcon} />
+                    )}
+                  </View>
                 </TouchableOpacity>
               );
             }}
-            numColumns={3}
+            numColumns={4}
             keyExtractor={(item) => item.file_url.toString()}
             style={styles.listContainer}
             onEndReached={() => {
@@ -172,6 +175,7 @@ export default function Thumbnails() {
           label="Randomize"
           action={() => {
             setSearchResultImages(new Map());
+            setPage(1);
             setIsRandom(isRandom + 1);
           }}
         />
@@ -211,11 +215,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: WindowHeight / 3.25,
-    width: WindowWidth / 3.25,
+    height: WindowHeight / 4.25,
+    width: WindowWidth / 4.25,
     margin: 2,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+  },
+  saveIconOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
   },
   bottomNav: {
     position: 'absolute',

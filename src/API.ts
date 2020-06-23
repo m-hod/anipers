@@ -74,6 +74,8 @@ export const getTagPosts = async (
   page: number,
   random?: boolean,
 ): Promise<BooruResponsePost[]> => {
+  console.log('getting tag posts');
+  console.log(page);
   const data: BooruResponsePost[] = await fetch(
     `${APIRoute}/posts.json?limit=50&page=${page}&tags=${tagName}&random=${
       random ? 'true' : 'false'
@@ -81,5 +83,6 @@ export const getTagPosts = async (
   )
     .then((response) => response.json())
     .catch((e) => console.warn(e));
+  console.log(data);
   return filterAPIResponses(data);
 };

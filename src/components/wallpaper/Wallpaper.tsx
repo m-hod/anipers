@@ -47,6 +47,8 @@ function Wallpaper() {
     savedImages,
     homeImages,
     setHomeImages,
+    page,
+    setPage,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -85,6 +87,8 @@ function Wallpaper() {
           data={
             type === 'home'
               ? [homeImages.get(image.file_url)!]
+              : type === 'result'
+              ? [image]
               : type === 'search'
               ? [...searchResultImages!.values()]
               : [...Object.keys(savedImages!).map((key) => savedImages![key])]
@@ -138,16 +142,18 @@ function Wallpaper() {
                   ...Object.keys(savedImages!).map((key) => savedImages![key]),
                 ].findIndex((post) => post.file_url === image.file_url)!
           }
+          initialNumToRender={1}
+          maxToRenderPerBatch={3}
           keyExtractor={(item) => item.file_url.toString()}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator
           viewabilityConfig={viewConfigRef.current}
           onViewableItemsChanged={onViewRef.current}
-          // onEndReached={() => {
-          //   setPage(page + 1);
-          // }}
-          // extraData={searchResultImages}
+          onEndReached={() => {
+            setPage(page + 1);
+          }}
+          extraData={searchResultImages}
           getItemLayout={(data, index) => ({
             offset: WindowWidth * index,
             length: WindowWidth,
@@ -166,6 +172,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     ...Layout.pageContainer,
     position: 'relative',
+    backgroundColor: 'rgb(255,255,255)',
   },
   metadataContainer: {
     position: 'absolute',

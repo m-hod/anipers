@@ -86,6 +86,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
     setActiveImage,
     setHomeImages,
     homeImages,
+    setPage,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -177,6 +178,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
                 key={el.item.id}
                 tag={el.item}
                 navigate={() => {
+                  setPage(1);
                   if (currentSearchTag !== el.item.name) {
                     setSearchResultImages(new Map());
                     setCurrentSearchTag(el.item.name);

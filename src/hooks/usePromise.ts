@@ -53,6 +53,7 @@ export const usePromise = <T>(cb: () => Promise<T>): PromiseState<T> => {
       dispatch({ type: REQUEST_START });
       try {
         const data = await cb();
+        // console.log('data from usepromise', data);
         dispatch({ type: REQUEST_SUCCESS, payload: data });
       } catch (e) {
         dispatch({ type: REQUEST_ERROR });

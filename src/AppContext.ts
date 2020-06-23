@@ -31,6 +31,8 @@ const AppContext = React.createContext<{
   setCurrentSearchTag(arg: any): void;
   homeImages: Map<string, ImageType>;
   setHomeImages(arg: any): void;
+  page: number;
+  setPage(arg: number): void;
 }>({
   appLoading: true,
   setAppLoading: () => {},
@@ -48,6 +50,8 @@ const AppContext = React.createContext<{
   setCurrentSearchTag: () => {},
   homeImages: new Map(),
   setHomeImages: () => {},
+  page: 1,
+  setPage: () => {},
 });
 
 export default AppContext;

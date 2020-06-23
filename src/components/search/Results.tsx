@@ -41,6 +41,8 @@ function Results() {
     setSearchResultImages,
     currentSearchTag,
     setCurrentSearchTag,
+    setActiveImage,
+    setPage,
   } = useContext(AppContext);
 
   const promise = useCallback(() => searchTags(reverseParseTagName(query)), [
@@ -62,6 +64,8 @@ function Results() {
       });
     }
   }, [promiseState]);
+
+  console.log(heroImage);
 
   const renderTagTabs = () => {
     if (promiseState.status === 'loading') {
@@ -90,6 +94,7 @@ function Results() {
                 key={el.item.id}
                 tag={el.item}
                 navigate={() => {
+                  setPage(1);
                   if (currentSearchTag !== el.item.name) {
                     setSearchResultImages(new Map());
                     setCurrentSearchTag(el.item.name);
@@ -112,7 +117,7 @@ function Results() {
       <TopNav />
       <View style={styles.tagContainer}>{renderTagTabs()}</View>
       <View style={styles.image}>
-        {heroImage && <ProgressiveImage image={heroImage} />}
+        {heroImage && <ProgressiveImage image={heroImage} type="result" />}
       </View>
       <View style={styles.bottomNav}>
         <IconButton
@@ -123,7 +128,7 @@ function Results() {
             if (heroImage) {
               navigation.navigate('wallpaper', {
                 image: heroImage,
-                type: 'home',
+                type: 'result',
               });
             }
           }}

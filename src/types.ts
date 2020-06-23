@@ -38,7 +38,7 @@ export type RootStackParamList = {
   collection: { fileName: string };
 };
 
-export type WallpaperMode = 'search' | 'saved' | 'home';
+export type WallpaperMode = 'search' | 'saved' | 'home' | 'result';
 
 export type ActiveImage = {
   raw: string;

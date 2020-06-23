@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useRef } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import {
   Layout,
   Colors,
@@ -46,12 +46,12 @@ const Collections = () => {
                       type: 'saved',
                     });
                   }}>
-                  <FastImage
+                  <Image
                     source={{
                       uri: el.item.cropped_file_url
                         ? el.item.cropped_file_url
                         : el.item.file_url,
-                      priority: FastImage.priority.high,
+                      // priority: FastImage.priority.high,
                     }}
                     style={[styles.image]}
                   />
