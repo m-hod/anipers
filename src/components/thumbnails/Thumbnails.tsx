@@ -100,7 +100,7 @@ export default function Thumbnails() {
   const renderPostList = () => {
     if (searchResultImages.size) {
       return (
-        <BlurView style={styles.flatListContainer}>
+        <View style={styles.flatListContainer}>
           <FlatList
             data={[...searchResultImages.values()]}
             renderItem={(el) => {
@@ -140,7 +140,7 @@ export default function Thumbnails() {
             extraData={searchResultImages}
             ref={flatListRef}
           />
-        </BlurView>
+        </View>
       );
     }
     return null;
@@ -171,24 +171,30 @@ export default function Thumbnails() {
         })()}
       </View>
       <View style={styles.bottomNav}>
-        <IconButton
-          icon="shuffle"
-          label="Randomize"
-          action={() => {
-            setSearchResultImages(new Map());
-            setPage(1);
-            setIsRandom(isRandom + 1);
-          }}
-        />
-        <IconButton
-          icon="expand-less"
-          label="Scroll To Top"
-          size={42}
-          action={() => {
-            //@ts-ignore
-            flatListRef.current?.scrollToIndex({ index: 0 });
-          }}
-        />
+        {searchResultImages.size && promiseState?.status === 'loading' ? (
+          <ActivityIndicator color="rgba(255,255,255,0.5)" size={28} />
+        ) : (
+          <>
+            <IconButton
+              icon="shuffle"
+              label="Randomize"
+              action={() => {
+                setSearchResultImages(new Map());
+                setPage(1);
+                setIsRandom(isRandom + 1);
+              }}
+            />
+            <IconButton
+              icon="expand-less"
+              label="Scroll To Top"
+              size={42}
+              action={() => {
+                //@ts-ignore
+                flatListRef.current?.scrollToIndex({ index: 0 });
+              }}
+            />
+          </>
+        )}
       </View>
     </Page>
   );

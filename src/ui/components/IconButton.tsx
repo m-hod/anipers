@@ -44,7 +44,6 @@ function IconButton({
           size={size ? size : iconSize}
         />
       </TouchableOpacity>
-      {/* <ToolTipModal label={label} visibility={isTooltipVisible} /> */}
     </>
   );
 }
