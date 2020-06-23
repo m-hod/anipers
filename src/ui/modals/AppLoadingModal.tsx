@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     zIndex: 9998,
+    paddingVertical: 50,
   },
   modalContent: {
     position: 'absolute',
