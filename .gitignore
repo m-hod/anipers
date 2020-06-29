@@ -65,3 +65,4 @@ buck-out/
 /design
 
 /android/gradle.properties
+/android/app/anipers.keystore
