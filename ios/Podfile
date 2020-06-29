@@ -44,8 +44,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'BooruWallpapers' do
-  # Pods for BooruWallpapers
+target 'anipers' do
+  # Pods for anipers
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -79,7 +79,7 @@ target 'BooruWallpapers' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
-  target 'BooruWallpapersTests' do
+  target 'anipersTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -96,10 +96,10 @@ target 'BooruWallpapers' do
   end
 end
 
-target 'BooruWallpapers-tvOS' do
-  # Pods for BooruWallpapers-tvOS
+target 'anipers-tvOS' do
+  # Pods for anipers-tvOS
 
-  target 'BooruWallpapers-tvOSTests' do
+  target 'anipers-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
