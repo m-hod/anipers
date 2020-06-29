@@ -64,4 +64,4 @@ buck-out/
 
 /design
 
-/android/gradle.properties
+# /android/gradle.properties
