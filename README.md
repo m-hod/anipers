@@ -3,7 +3,7 @@ Anipers
 </h1>
 
 <p align="center">
-A wrapper for the Safebooru API to provide easy access to anime wallpapers on your mobile device.  
+A wrapper for the Safebooru API to provide easy access to Anime wallpapers on your mobile device.  
 </p>
 
 <p>
