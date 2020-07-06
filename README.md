@@ -3,7 +3,9 @@ Anipers
 </h1>
 
 <div align="center">
-<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75">  
+  <a href="" taret="_blank" ref="noopener noreferrer">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75">  
+  </a>
 </div>
 
 <p align="center">
