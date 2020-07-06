@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { Layout } from 'src/constants';
+import { Layout, statusBarHeight, menuBarHeight } from 'src/constants';
 import AppContext from 'src/AppContext';
 import { ProgressBar } from '@react-native-community/progress-bar-android';
 
@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     zIndex: 9998,
-    paddingVertical: 50,
+    paddingTop: statusBarHeight,
+    paddingBottom: menuBarHeight,
   },
   modalContent: {
     position: 'absolute',
