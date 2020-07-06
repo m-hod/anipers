@@ -3,6 +3,7 @@ Anipers
 </h1>
 
 <p align="center">
+<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75">
 A wrapper for the Safebooru API to provide easy access to Anime wallpapers on your mobile device.  
 </p>
 
