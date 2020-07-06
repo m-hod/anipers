@@ -51,7 +51,6 @@ const Collections = () => {
                       uri: el.item.cropped_file_url
                         ? el.item.cropped_file_url
                         : el.item.file_url,
-                      // priority: FastImage.priority.high,
                     }}
                     style={[styles.image]}
                   />

@@ -83,7 +83,6 @@ function TagsGroup({ category }: { category: TagCategories }) {
     setSearchResultImages,
     currentSearchTag,
     setCurrentSearchTag,
-    setActiveImage,
     setHomeImages,
     homeImages,
     setPage,
@@ -244,7 +243,6 @@ function HomeBottomNav({
   setImageLoading: (arg: boolean) => void;
 }) {
   const navigation = useNavigation<NavigationProps>();
-  const { setActiveImage } = useContext(AppContext);
 
   return (
     <View style={styles.bottomNav}>
@@ -254,7 +252,6 @@ function HomeBottomNav({
         size={36}
         action={() => {
           if (image) {
-            setActiveImage(image);
             navigation.navigate('wallpaper', { image, type: 'home' });
           }
         }}

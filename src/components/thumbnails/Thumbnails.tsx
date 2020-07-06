@@ -107,9 +107,9 @@ export default function Thumbnails() {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    if (el.item.file_url !== activeImage?.file_url) {
-                      setActiveImage(el.item);
-                    }
+                    // if (el.item.file_url !== activeImage?.file_url) {
+                    //   setActiveImage(el.item);
+                    // }
                     navigation.navigate('wallpaper', {
                       image: el.item,
                       type: 'search',

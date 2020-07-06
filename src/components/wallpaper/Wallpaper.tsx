@@ -79,6 +79,8 @@ function Wallpaper() {
     }
   }, [debounceScroll]);
 
+  if (!activeImage) return null;
+
   return (
     <View style={styles.pageContainer}>
       {activeImage ? (

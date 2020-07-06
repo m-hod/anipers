@@ -41,7 +41,6 @@ function Results() {
     setSearchResultImages,
     currentSearchTag,
     setCurrentSearchTag,
-    setActiveImage,
     setPage,
   } = useContext(AppContext);
 
