@@ -63,6 +63,3 @@ buck-out/
 /ios/Pods/
 
 /design
-
-/android/gradle.properties
-/android/app/anipers.keystore
