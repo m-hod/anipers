@@ -7,7 +7,7 @@ A wrapper for the Safebooru API to provide easy access to Anime wallpapers on yo
 </p>
 
 <div align="center">
-  <a href="" taret="_blank" rel="noopener noreferrer">
+  <a href="" target="_blank" rel="noopener noreferrer">
     <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75">  
   </a>
 </div>
