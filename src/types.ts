@@ -3,6 +3,8 @@ export type BooruResponsePost = {
   file_ext: string;
   /** External file url */
   file_url: string;
+  /** Optmized version of file url */
+  large_file_url: string;
   /** Low-res file url for thumbnails */
   preview_file_url: string;
   tag_string: string;

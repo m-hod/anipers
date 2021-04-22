@@ -1,34 +1,27 @@
-import React, { useCallback, useEffect, useState, useContext } from 'react';
-import { RootStackParamList } from 'src/types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
-import { searchTags, getRandomPostByTag } from 'src/API';
-import { usePromise } from 'src/hooks/usePromise';
 import {
-  Text,
-  View,
-  StyleSheet,
   ActivityIndicator,
   Dimensions,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
-import TagTab from 'src/ui/components/TagTab';
-import { reverseParseTagName } from 'src/utils';
-import {
-  Fonts,
-  Layout,
-  statusBarHeight,
-  menuBarHeight,
-  WindowHeight,
-  WindowWidth,
-} from 'src/constants';
-import FastImage from 'react-native-fast-image';
-import TopNav from './TopNav';
-import IconButton from 'src/ui/components/IconButton';
-import TagsPage from 'src/ui/pages/TagsPage';
-import ProgressiveImage from 'src/ui/components/ProgressiveImage';
-import { ImageType } from 'src/types';
+import { Fonts, Layout, WindowHeight, WindowWidth } from 'src/constants';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { getRandomPostByTag, searchTags } from 'src/API';
+
 import AppContext from 'src/AppContext';
+import { FlatList } from 'react-native-gesture-handler';
+import IconButton from 'src/ui/components/IconButton';
+import { ImageType } from 'src/types';
+import ProgressiveImage from 'src/ui/components/ProgressiveImage';
+import { RootStackParamList } from 'src/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import TagTab from 'src/ui/components/TagTab';
+import TagsPage from 'src/ui/pages/TagsPage';
+import TopNav from './TopNav';
+import { reverseParseTagName } from 'src/utils';
+import { usePromise } from 'src/hooks/usePromise';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 type RouteProps = RouteProp<RootStackParamList, 'results'>;
@@ -57,6 +50,7 @@ function Results() {
           file_ext: res[0].file_ext,
           file_url: res[0].file_url,
           preview_file_url: res[0].preview_file_url,
+          large_file_url: res[0].large_file_url,
           tag_string_artist: res[0].tag_string_artist,
           pixiv_id: res[0].pixiv_id,
         });

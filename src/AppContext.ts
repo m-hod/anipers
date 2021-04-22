@@ -1,10 +1,6 @@
+import { ImageType, StorageItems } from './types';
+
 import React from 'react';
-import {
-  BooruResponsePost,
-  ActiveImage,
-  ImageType,
-  StorageItems,
-} from './types';
 
 const AppContext = React.createContext<{
   /** Indicators of initial homepage background image loading state - app loading modal appears until resolved */

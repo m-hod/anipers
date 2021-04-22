@@ -1,11 +1,13 @@
-import { useRef, useEffect } from 'react';
 import { Animated, Easing } from 'react-native';
+import { useEffect, useRef } from 'react';
 
 const useFadeAnimation = (trigger: boolean) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (!fadeAnim) return;
+    if (!fadeAnim) {
+      return;
+    }
     if (trigger) {
       Animated.timing(fadeAnim, {
         toValue: 0,

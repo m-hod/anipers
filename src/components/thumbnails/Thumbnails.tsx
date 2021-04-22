@@ -1,39 +1,37 @@
-import React, {
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-  useLayoutEffect,
-} from 'react';
 import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
   ActivityIndicator,
+  FlatList,
   Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { RootStackParamList, BooruResponsePost, ImageType } from 'src/types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import {
-  statusBarHeight,
-  menuBarHeight,
   Colors,
   WindowHeight,
   WindowWidth,
+  menuBarHeight,
+  statusBarHeight,
 } from 'src/constants';
-import { getTagPosts } from 'src/API';
-import { usePromise } from 'src/hooks/usePromise';
-import TopNav from '../search/TopNav';
-import Page from 'src/ui/components/Page';
+import { ImageType, RootStackParamList } from 'src/types';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
 import AppContext from 'src/AppContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FastImage from 'react-native-fast-image';
 import IconButton from 'src/ui/components/IconButton';
-import { BlurView } from '@react-native-community/blur';
+import Page from 'src/ui/components/Page';
+import { StackNavigationProp } from '@react-navigation/stack';
+import TopNav from '../search/TopNav';
+import { getTagPosts } from 'src/API';
+import { usePromise } from 'src/hooks/usePromise';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'thumbnails'>;
 type RouteProps = RouteProp<RootStackParamList, 'thumbnails'>;
@@ -47,8 +45,6 @@ export default function Thumbnails() {
     searchResultImages,
     setSearchResultImages,
     savedImages,
-    activeImage,
-    setActiveImage,
     page,
     setPage,
   } = useContext(AppContext);
@@ -84,6 +80,7 @@ export default function Thumbnails() {
               newState.set(post.file_url, {
                 file_ext: post.file_ext,
                 file_url: post.file_url,
+                large_file_url: post.large_file_url,
                 preview_file_url: post.preview_file_url,
                 tag_string_artist: post.tag_string_artist,
                 pixiv_id: post.pixiv_id,
@@ -95,7 +92,7 @@ export default function Thumbnails() {
         return prevState;
       });
     }
-  }, [promiseState, setSearchResultImages]);
+  }, [page, promiseState, setSearchResultImages]);
 
   const renderPostList = () => {
     if (searchResultImages.size) {
@@ -152,8 +149,12 @@ export default function Thumbnails() {
       <View style={styles.pageContainer}>
         {renderPostList()}
         {(() => {
-          if (searchResultImages.size) return null;
-          if (!promiseState) return null;
+          if (searchResultImages.size) {
+            return null;
+          }
+          if (!promiseState) {
+            return null;
+          }
           if (promiseState.status === 'loading') {
             return (
               <View style={styles.fillContainer}>

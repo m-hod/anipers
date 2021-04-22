@@ -1,17 +1,11 @@
+import { Colors, menuBarHeight, statusBarHeight } from 'src/constants';
+import { Dimensions, StyleSheet, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { statusBarHeight, Colors, menuBarHeight } from 'src/constants';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from 'src/types';
-import { useNavigation } from '@react-navigation/native';
+
 import IconButton from 'src/ui/components/IconButton';
+import { RootStackParamList } from 'src/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'results'>;
 

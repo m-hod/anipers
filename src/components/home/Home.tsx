@@ -1,40 +1,38 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
 import {
-  View,
-  FlatList,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Dimensions,
   ActivityIndicator,
+  Dimensions,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
   ToastAndroid,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import TopNav from '../search/TopNav';
 import {
-  statusBarHeight,
-  menuBarHeight,
   CategoryIDs,
   Colors,
-  Fonts,
-  filteredTags,
   Layout,
   WindowHeight,
   WindowWidth,
+  filteredTags,
   homeTagsCategories,
 } from 'src/constants';
-import { usePromise } from 'src/hooks/usePromise';
+import { ImageType, RootStackParamList, TagCategories } from 'src/types';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { getMostPopularTags, getRandomPostByTag } from 'src/API';
-import { TagCategories, RootStackParamList, ImageType } from 'src/types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
-import Loading from 'src/ui/animations/Loading';
+
 import AppContext from 'src/AppContext';
-import TagTab from 'src/ui/components/TagTab';
-import IconButton from 'src/ui/components/IconButton';
 import FastImage from 'react-native-fast-image';
+import IconButton from 'src/ui/components/IconButton';
 import ImmersiveMode from 'react-native-immersive-mode';
+import Loading from 'src/ui/animations/Loading';
+import { StackNavigationProp } from '@react-navigation/stack';
+import TagTab from 'src/ui/components/TagTab';
 import TagsPage from 'src/ui/pages/TagsPage';
+import TopNav from '../search/TopNav';
+import { useNavigation } from '@react-navigation/native';
+import { usePromise } from 'src/hooks/usePromise';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -51,7 +49,7 @@ export default function Home() {
         clearTimeout(timer);
       };
     }
-  }, []);
+  }, [appLoading]);
 
   return (
     <View style={initialBoot ? styles.hidden : null}>
@@ -84,7 +82,6 @@ function TagsGroup({ category }: { category: TagCategories }) {
     currentSearchTag,
     setCurrentSearchTag,
     setHomeImages,
-    homeImages,
     setPage,
   } = useContext(AppContext);
 
@@ -120,6 +117,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
           file_ext: responsePost.file_ext,
           preview_file_url: responsePost.preview_file_url,
           file_url: responsePost.file_url,
+          large_file_url: responsePost.large_file_url,
           tag_string_artist: responsePost.tag_string_artist,
           pixiv_id: responsePost.pixiv_id,
         });
@@ -145,18 +143,7 @@ function TagsGroup({ category }: { category: TagCategories }) {
         return newState;
       });
     }
-  }, [heroImageUrl]);
-
-  // useEffect(() => {
-  //   console.log('re-remder');
-  //   if (
-  //     homeImages.has(heroImageUrl[0]) &&
-  //     homeImages.get(heroImageUrl[0])?.cropped_file_url
-  //   ) {
-  //     //@ts-ignore
-  //     setHeroImageUrl([homeImages.get(heroImageUrl[0])!.cropped_file_url]);
-  //   }
-  // }, [homeImages]);
+  }, [heroImageUrl, currentImage, setHomeImages]);
 
   const renderTags = () => {
     if (promiseState.status === 'loading') {

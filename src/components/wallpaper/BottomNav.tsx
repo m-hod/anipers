@@ -1,48 +1,38 @@
-import React, { useState, useContext, useEffect } from 'react';
 import {
-  StyleSheet,
-  Dimensions,
-  View,
-  ToastAndroid,
-  PixelRatio,
   Animated,
+  Dimensions,
+  PixelRatio,
+  StyleSheet,
+  ToastAndroid,
 } from 'react-native';
-import IconButton from 'src/ui/components/IconButton';
+import { ImageType, WallpaperMode } from 'src/types';
+import ManageWallpaper, { TYPE } from 'react-native-manage-wallpaper';
+import React, { useContext } from 'react';
 import {
-  Colors,
-  menuBarHeight,
-  WindowWidth,
   WindowHeight,
-  downloadsDirectoryPath,
+  WindowWidth,
   dbKey,
+  downloadsDirectoryPath,
+  menuBarHeight,
 } from 'src/constants';
-import ImagePicker from 'react-native-image-crop-picker';
+
 import AppContext from 'src/AppContext';
-import {
-  BooruResponsePost,
-  ActiveImage,
-  ImageType,
-  StorageItems,
-  WallpaperMode,
-} from 'src/types';
+import AsyncStorage from '@react-native-community/async-storage';
+import IconButton from 'src/ui/components/IconButton';
+import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import { parseFileUrl } from 'src/utils';
-import ManageWallpaper, { TYPE } from 'react-native-manage-wallpaper';
-import AsyncStorage from '@react-native-community/async-storage';
 import useFadeAnimation from 'src/hooks/useFadeAnimation';
 import { useNavigation } from '@react-navigation/native';
 
 function BottomNav({
-  image,
   fullscreen,
   type,
 }: {
-  image: ImageType;
   fullscreen: boolean;
   type: WallpaperMode;
 }) {
   const navigation = useNavigation();
-  const [metadataVisibility, setMetadataVisibility] = useState(false);
   const {
     activeImage,
     setActiveImage,
@@ -85,6 +75,7 @@ function BottomNav({
                   const db = await AsyncStorage.getItem(dbKey);
                   const data = JSON.parse(db!);
                   const {
+                    //eslint-disable-next-line @typescript-eslint/no-unused-vars
                     [activeImage!.file_url]: removedImage,
                     ...rest
                   } = data;
@@ -139,6 +130,7 @@ function BottomNav({
             // if mode = saved, need to save updated crop to db
             if (activeImage?.cropped_file_url) {
               setActiveImage((prevState: ImageType) => {
+                //eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { cropped_file_url, ...rest } = prevState;
                 const newState = { ...rest };
                 return newState;
@@ -146,6 +138,7 @@ function BottomNav({
               if (type === 'search') {
                 setSearchResultImages((prevState: Map<string, ImageType>) => {
                   const newState = new Map([...prevState]);
+                  //eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { cropped_file_url, ...rest } = newState.get(
                     activeImage!.file_url,
                   )!;
@@ -159,6 +152,7 @@ function BottomNav({
               if (type === 'home') {
                 setHomeImages((prevState: Map<string, ImageType>) => {
                   const newState = new Map([...prevState]);
+                  //eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { cropped_file_url, ...rest } = newState.get(
                     activeImage!.file_url,
                   )!;
@@ -174,6 +168,7 @@ function BottomNav({
                   try {
                     const db = await AsyncStorage.getItem(dbKey);
                     const data = JSON.parse(db!);
+                    //eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { cropped_file_url, ...rest } = data[
                       activeImage!.file_url
                     ];

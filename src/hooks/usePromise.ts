@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, Reducer } from 'react';
+import React, { Reducer, useEffect, useReducer } from 'react';
 
 type PromiseState<T> = {
   status: Status;

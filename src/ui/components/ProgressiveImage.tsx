@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { ImageType } from 'src/types';
-import FastImage from 'react-native-fast-image';
-import { BlurView } from '@react-native-community/blur';
-import { StyleSheet, View, Image } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { Layout, WindowHeight, WindowWidth } from 'src/constants';
+import React, { useState } from 'react';
+
+import { BlurView } from '@react-native-community/blur';
+import { ImageType } from 'src/types';
 
 function ProgressiveImage({
   image,

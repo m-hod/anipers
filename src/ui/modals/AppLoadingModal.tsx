@@ -1,12 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  Modal,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
-import { Layout, statusBarHeight, menuBarHeight } from 'src/constants';
+import { Image, Modal, StyleSheet, View } from 'react-native';
+import { Layout, menuBarHeight, statusBarHeight } from 'src/constants';
+import React, { useContext } from 'react';
+
 import AppContext from 'src/AppContext';
 import { ProgressBar } from '@react-native-community/progress-bar-android';
 

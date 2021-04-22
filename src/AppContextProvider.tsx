@@ -1,13 +1,9 @@
+import { ImageType, StorageItems } from './types';
 import React, { useEffect, useState } from 'react';
+
 import AppContext from './AppContext';
-import {
-  BooruResponsePost,
-  ActiveImage,
-  ImageType,
-  StorageItems,
-} from './types';
-import ImmersiveMode from 'react-native-immersive-mode';
 import AsyncStorage from '@react-native-community/async-storage';
+import ImmersiveMode from 'react-native-immersive-mode';
 import { dbKey } from './constants';
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {

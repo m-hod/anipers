@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, StyleSheet, ToastAndroid } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Colors, iconSize } from 'src/constants';
-import ToolTipModal from '../modals/ToolTipModal';
+import { StyleSheet, ToastAndroid, TouchableOpacity } from 'react-native';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import React from 'react';
 
 function IconButton({
   icon,
@@ -21,8 +21,6 @@ function IconButton({
   disabled?: boolean;
   variant?: 'saved' | undefined;
 }) {
-  const [isTooltipVisible, setTooltipVisibility] = useState(false);
-
   return (
     <>
       <TouchableOpacity
@@ -30,7 +28,9 @@ function IconButton({
           ToastAndroid.show(label, 5);
         }}
         onPress={() => {
-          if (disabled) return;
+          if (disabled) {
+            return;
+          }
           action();
         }}>
         <Icon

@@ -1,22 +1,22 @@
-import React, { useEffect, useContext, useRef } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
 import {
-  Layout,
   Colors,
-  statusBarHeight,
-  menuBarHeight,
+  Fonts,
+  Layout,
   WindowHeight,
   WindowWidth,
-  Fonts,
+  menuBarHeight,
+  statusBarHeight,
 } from 'src/constants';
-import TopNav from '../search/TopNav';
-import AppContext from 'src/AppContext';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from 'src/types';
-import FastImage from 'react-native-fast-image';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useEffect, useRef } from 'react';
+
+import AppContext from 'src/AppContext';
 import ImmersiveMode from 'react-native-immersive-mode';
+import { RootStackParamList } from 'src/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import TopNav from '../search/TopNav';
+import { useNavigation } from '@react-navigation/native';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'thumbnails'>;
 

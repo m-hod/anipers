@@ -1,34 +1,21 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import {
-  StyleSheet,
-  Image,
-  View,
-  Dimensions,
-  Text,
-  Linking,
-  Animated,
-} from 'react-native';
-import {
-  Layout,
-  menuBarHeight,
-  WindowHeight,
-  WindowWidth,
-  statusBarHeight,
-} from 'src/constants';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from 'src/types';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import AppContext from 'src/AppContext';
+import { Animated, Linking, StyleSheet, Text, View } from 'react-native';
 import {
   FlatList,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
+import { Layout, WindowWidth, statusBarHeight } from 'src/constants';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+
+import AppContext from 'src/AppContext';
 import BottomNav from './BottomNav';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImmersiveMode from 'react-native-immersive-mode';
 import ProgressiveImage from 'src/ui/components/ProgressiveImage';
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+import { RootStackParamList } from 'src/types';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { parseTagName } from 'src/utils';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import useFadeAnimation from 'src/hooks/useFadeAnimation';
 
 type NavigationProps = StackNavigationProp<RootStackParamList, 'wallpaper'>;
@@ -41,18 +28,17 @@ function Wallpaper() {
   const [debounceScroll, setDebounceScroll] = useState(true);
   const {
     searchResultImages,
-    setSearchResultImages,
     activeImage,
     setActiveImage,
     savedImages,
     homeImages,
-    setHomeImages,
     page,
     setPage,
   } = useContext(AppContext);
 
   useEffect(() => {
     setActiveImage(image);
+    //eslint-disable-next-line
   }, []);
 
   const onViewRef = useRef((info: any) => {
@@ -79,7 +65,9 @@ function Wallpaper() {
     }
   }, [debounceScroll]);
 
-  if (!activeImage) return null;
+  if (!activeImage) {
+    return null;
+  }
 
   return (
     <View style={styles.pageContainer}>
@@ -163,7 +151,7 @@ function Wallpaper() {
           })}
         />
       ) : null}
-      <BottomNav image={image} fullscreen={fullscreen} type={type} />
+      <BottomNav fullscreen={fullscreen} type={type} />
     </View>
   );
 }
