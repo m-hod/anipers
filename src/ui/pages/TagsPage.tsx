@@ -1,12 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import {
-  Layout,
-  statusBarHeight,
-  menuBarHeight,
-  Fonts,
   Colors,
+  Fonts,
+  Layout,
+  menuBarHeight,
+  statusBarHeight,
 } from 'src/constants';
+import { StyleSheet, Text, View } from 'react-native';
+
+import React from 'react';
 
 function TagsPage({
   title,

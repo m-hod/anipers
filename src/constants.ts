@@ -1,12 +1,18 @@
 import {
-  StatusBar,
-  Platform,
   Dimensions,
+  NativeModules,
+  Platform,
+  StatusBar,
   TextStyle,
   ViewStyle,
 } from 'react-native';
 import { MappedTagCategories, TagCategories } from './types';
+
 import RNFS from 'react-native-fs';
+
+const { StatusBarManager } = NativeModules;
+console.log('satusbarmanager', StatusBarManager.height);
+console.log('statusbarheight', StatusBar.currentHeight);
 
 export const WindowHeight = Dimensions.get('window').height;
 export const WindowWidth = Dimensions.get('window').width;

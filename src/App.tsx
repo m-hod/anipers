@@ -1,18 +1,15 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { RootStackParamList } from './types';
-
-import StatusBar from './StatusBar';
-import AppLoadingModal from './ui/modals/AppLoadingModal';
 import AppContextProvider from './AppContextProvider';
-
-/* Screens */
+import AppLoadingModal from './ui/modals/AppLoadingModal';
+import Collections from './components/collections/Collections';
 import Home from './components/home/Home';
+import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import Results from './components/search/Results';
+import { RootStackParamList } from './types';
+import StatusBar from './StatusBar';
 import Thumbnails from './components/thumbnails/Thumbnails';
 import Wallpaper from './components/wallpaper/Wallpaper';
-import Results from './components/search/Results';
-import Collections from './components/collections/Collections';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
